@@ -6,7 +6,10 @@ const paths = [
   'src/engine.js', 'src/exchange.js', 'src/worksheet.js',
 ];
 const urls = new Set(paths.map(path => new URL(path, root).href));
+const assetPaths = new Set(paths.map(path => new URL(path, root).pathname));
 const index = new URL('index.html', root).href;
+const rootPath = new URL(root).pathname;
+const indexPath = new URL(index).pathname;
 
 self.addEventListener('install', event => {
   event.waitUntil((async () => {
@@ -28,10 +31,10 @@ self.addEventListener('fetch', event => {
   if (request.method !== 'GET') return;
   const url = new URL(request.url);
   if (url.origin !== self.location.origin) return;
-  const navigation = request.mode === 'navigate' && (url.href === root || url.href === index);
-  if (!navigation && !urls.has(url.href)) return;
+  const navigation = request.mode === 'navigate' && (url.pathname === rootPath || url.pathname === indexPath);
+  if (!navigation && !assetPaths.has(url.pathname)) return;
   event.respondWith((async () => {
     const cache = await caches.open(cacheName);
-    return await cache.match(navigation ? index : request) || fetch(request);
+    return await cache.match(navigation ? index : request, { ignoreSearch: true }) || fetch(request);
   })());
 });

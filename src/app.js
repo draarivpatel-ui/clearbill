@@ -58,6 +58,8 @@ function cell(row, label, content, cls) {
 
 function announce(text) { $('announcer').textContent = text; }
 
+const titleFor = view => (view === 'audit' ? 'case-title' : `${view}-title`);
+
 function showView(view, focus = true) {
   state.view = view;
   document.body.dataset.print = view === 'worksheet' ? 'worksheet' : '';
@@ -65,7 +67,7 @@ function showView(view, focus = true) {
   for (const panel of all('[data-panel]')) panel.hidden = panel.dataset.panel !== view;
   if (view === 'worksheet') renderWorksheet();
   if (view === 'reference') renderReference();
-  if (focus) ($(view === 'audit' ? 'case-title' : `${view}-title`)).focus();
+  if (focus) $(titleFor(view)).focus();
 }
 
 function selectCase(id, locality, follow = true) {
@@ -361,6 +363,16 @@ function closeShare() {
   $('open-key').value = '';
 }
 
+function acceptSealedLink() {
+  if (!location.hash.startsWith('#sealed=')) return false;
+  state.fragment = location.hash.length <= 520 ? location.hash : '#sealed=invalid';
+  history.replaceState(null, '', `${location.pathname}${location.search}`);
+  $('share-open-status').textContent = '';
+  $('open-key').value = '';
+  $('share-open-panel').hidden = false;
+  return true;
+}
+
 async function receiveShare(event) {
   event.preventDefault();
   if (!canCrypto()) {
@@ -432,14 +444,13 @@ function initialize() {
   $('replay-file').addEventListener('change', checkFile);
   $('share-seal').addEventListener('click', makeShare);
   $('share-open-form').addEventListener('submit', receiveShare);
-  $('discard-share').addEventListener('click', () => { closeShare(); $('case-title').focus(); });
+  $('discard-share').addEventListener('click', () => { closeShare(); $(titleFor(state.view)).focus(); });
   selectCase('demo-er', undefined, false);
   renderFpl();
-  if (location.hash.startsWith('#sealed=')) {
-    state.fragment = location.hash.length <= 520 ? location.hash : '#sealed=invalid';
-    history.replaceState(null, '', `${location.pathname}${location.search}`);
-    $('share-open-panel').hidden = false;
-  }
+  acceptSealedLink();
+  window.addEventListener('hashchange', () => {
+    if (acceptSealedLink()) $('open-key').focus();
+  });
 }
 
 async function offlineReady() {

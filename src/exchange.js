@@ -55,8 +55,8 @@ export async function verifyBundle(value) {
 export function csvCell(value) {
   if (typeof value === 'number' && Number.isSafeInteger(value)) return String(value);
   let content = String(value ?? '');
-  // Quote fields and neutralize formula prefixes, including those after whitespace or controls.
-  if (/^[\u0000-\u0020\u007f\u00a0\ufeff]*[=+\-@\uff1d\uff0b\uff0d\uff20]|^[\t\r\n]/u.test(content)) content = `'${content}`;
+  // Quote fields and neutralize formula prefixes, including those after whitespace, controls or invisible formatting characters.
+  if (/^[\p{White_Space}\p{Cc}\p{Cf}]*[=+\-@\uff1d\uff0b\uff0d\uff20]|^[\t\r\n]/u.test(content)) content = `'${content}`;
   return `"${content.replaceAll('"', '""')}"`;
 }
 

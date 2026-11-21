@@ -304,6 +304,22 @@ async function runViewport(cdp, app, scratch, width, height) {
     await wait(`${q('#share-open-panel')}.hidden && ${q('#finding-count')}.textContent === '0'`, 'released fictional case');
     mark(`${width}x${height} CSV, audit replay, authenticated link and wrong-key rejection`);
 
+    const again = await evaluate(`import('./src/exchange.js').then(m => m.sealSummary('demo-imaging', 'manhattan'))`);
+    await send('Page.navigate', { url: `${route}${again.fragment}` });
+    await wait(`!${q('#share-open-panel')}.hidden && location.hash === ''`, 'second sealed link in the same tab');
+    await set('#open-key', again.key);
+    await click('#share-open-form button[type=submit]');
+    await wait(`${q('#share-open-panel')}.hidden && ${q('#case-title')}.textContent === 'Outpatient imaging'`, 'second fictional case released');
+    mark(`${width}x${height} second sealed link replaces panel state and strips the fragment`);
+
+    const third = await evaluate(`import('./src/exchange.js').then(m => m.sealSummary('demo-clean', 'iowa'))`);
+    await click('[data-view=worksheet]');
+    await send('Page.navigate', { url: `${route}${third.fragment}` });
+    await wait(`!${q('#share-open-panel')}.hidden`, 'sealed panel over worksheet view');
+    await click('#discard-share');
+    assert.equal(await evaluate('document.activeElement.id'), 'worksheet-title');
+    mark(`${width}x${height} share dismiss restores focus to the active view title`);
+
     const offline = { offline: true, latency: 0, downloadThroughput: 0, uploadThroughput: 0 };
     app.intercepted.offline = true;
     await send('Network.emulateNetworkConditions', offline);
@@ -314,6 +330,8 @@ async function runViewport(cdp, app, scratch, width, height) {
       await click('[data-case=demo-clean]');
       assert.equal(await text('#finding-count'), '0');
       await fit('offline audit');
+      await send('Page.navigate', { url: `${route}?offline=probe` });
+      await wait(`!navigator.onLine && ${q('#case-title')}?.textContent === 'ER visit'`, 'offline reload with a query string');
     } finally {
       app.intercepted.offline = false;
       await send('Network.emulateNetworkConditions', { ...offline, offline: false, downloadThroughput: -1, uploadThroughput: -1 });
