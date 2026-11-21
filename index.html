@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self'; font-src 'self'; connect-src 'self'; worker-src 'self'; base-uri 'none'; form-action 'none'; object-src 'none'">
+<meta name="description" content="A fictional workbench for practicing how to read an itemized medical bill, check charges against a Medicare reference snapshot and print a dispute worksheet.">
+<meta name="theme-color" content="#24241f">
+<title>ClearBill</title>
+<link rel="icon" type="image/svg+xml" href="./favicon.svg">
+<link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to workbench</a>
+<header class="masthead">
+  <a class="brand" href="./" aria-label="ClearBill home">
+    <svg class="brand-mark" viewBox="0 0 32 40" aria-hidden="true" focusable="false">
+      <path d="M4 2h24v34l-3-2-3 2-3-2-3 2-3-2-3 2-3-2-3 2z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+      <path d="M9 10h14M9 16h14M9 22h10" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+    </svg>
+    <span class="brand-name">ClearBill</span>
+  </a>
+  <nav aria-label="Workbench">
+    <button type="button" data-view="audit" aria-pressed="true">Audit</button>
+    <button type="button" data-view="reference" aria-pressed="false">Reference</button>
+    <button type="button" data-view="worksheet" aria-pressed="false">Worksheet</button>
+  </nav>
+</header>
+<p class="safety"><strong>Fictional data only.</strong> Never enter real health information (PHI), SSNs or account numbers.</p>
+<main id="main" tabindex="-1" class="desk">
+  <aside class="case-rail" aria-label="Fictional scenarios">
+    <h2>Find a bill</h2>
+    <div id="case-list" class="case-list"></div>
+    <div class="locality">
+      <label for="locality">Medicare locality</label>
+      <select id="locality"></select>
+    </div>
+    <p id="offline-status" role="status" class="offline-status">Preparing offline access</p>
+    <div class="rail-note">
+      <p>Every case is invented. Rates come from a fixed Medicare snapshot: RVU26D relative values, selected NCCI edits and 2026 poverty guidelines. Edition clearbill-2026q4-v1.</p>
+    </div>
+  </aside>
+  <div class="work-region">
+    <section id="share-open-panel" class="share-open" hidden aria-labelledby="share-open-title">
+      <h2 id="share-open-title">Open a fictional summary</h2>
+      <form id="share-open-form">
+        <label for="open-key">Separate share key</label>
+        <input id="open-key" type="text" autocomplete="off" required maxlength="43">
+        <button type="submit">Open summary</button>
+        <button type="button" id="discard-share">Dismiss</button>
+      </form>
+      <p id="share-open-status" role="status"></p>
+    </section>
+    <section data-panel="audit" id="audit-panel" aria-labelledby="case-title">
+      <div class="case-header">
+        <h1 id="case-title" tabindex="-1"></h1>
+        <div id="case-meta" class="case-meta"></div>
+        <button type="button" id="review-jump" class="review-jump">Go to audit findings</button>
+      </div>
+      <div class="audit-grid">
+        <section class="receipt" aria-labelledby="ledger-heading">
+          <div class="receipt-head">
+            <h2 id="ledger-heading">Itemized bill</h2>
+            <span id="bill-id"></span>
+          </div>
+          <div id="ledger"></div>
+          <div id="settlement" class="settlement"></div>
+        </section>
+        <section class="review" aria-labelledby="findings-heading">
+          <div class="review-head">
+            <h2 id="findings-heading" tabindex="-1">Audit findings</h2>
+            <span id="finding-count" class="count"></span>
+          </div>
+          <div id="findings"></div>
+          <p class="review-note">A flag is a question to ask, not a denial or proof of error.</p>
+          <button type="button" class="primary" id="worksheet-open">Open dispute worksheet</button>
+        </section>
+      </div>
+      <details id="edit-details" class="tool-detail">
+        <summary>Adjust fictional line items</summary>
+        <form id="edit-form">
+          <div class="field">
+            <label for="edit-line">Line item</label>
+            <select id="edit-line"></select>
+          </div>
+          <div class="field">
+            <label for="edit-modifier">Modifier</label>
+            <select id="edit-modifier"></select>
+          </div>
+          <div class="field">
+            <label for="edit-evidence">Evidence on file</label>
+            <select id="edit-evidence"></select>
+          </div>
+          <div class="field field-num">
+            <label for="edit-units">Units</label>
+            <input id="edit-units" type="number" min="1" max="500" step="1">
+          </div>
+          <div class="field field-num">
+            <label for="edit-charge">Charge</label>
+            <input id="edit-charge" type="number" min="0" max="1000000" step=".01">
+          </div>
+          <div class="form-actions">
+            <button type="submit" id="edit-button">Apply edit</button>
+            <button type="button" id="edit-reset">Reset bill</button>
+          </div>
+          <p id="edit-status" role="status"></p>
+        </form>
+      </details>
+      <details class="tool-detail" id="export-details">
+        <summary>Export and verify evidence</summary>
+        <div class="actions">
+          <button type="button" id="export-csv">Export CSV</button>
+          <button type="button" id="export-json">Export audit bundle</button>
+          <button type="button" id="share-seal">Seal a share summary</button>
+          <div class="field replay">
+            <label for="replay-file">Verify a saved audit bundle</label>
+            <input id="replay-file" type="file" accept=".json,application/json">
+          </div>
+          <div id="share-output" hidden>
+            <div class="field">
+              <label for="share-link">Share link</label>
+              <input id="share-link" type="text" readonly>
+            </div>
+            <div class="field">
+              <label for="share-key">Share key</label>
+              <input id="share-key" type="text" readonly>
+            </div>
+            <p class="share-caption">Send the link and the key by different routes. The sealed summary carries the original fictional fixture and locality only, never your edits.</p>
+          </div>
+          <p id="export-status" role="status"></p>
+        </div>
+      </details>
+    </section>
+    <section data-panel="reference" id="reference-panel" hidden aria-labelledby="reference-title">
+      <h1 id="reference-title" tabindex="-1">Medicare reference</h1>
+      <form class="controls" id="reference-controls">
+        <div class="field">
+          <label for="ref-code">Procedure code</label>
+          <select id="ref-code"></select>
+        </div>
+        <div class="field">
+          <label for="ref-setting">Service setting</label>
+          <select id="ref-setting">
+            <option value="office">Office/non-facility</option>
+            <option value="facility">Facility professional</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="ref-component">Component</label>
+          <select id="ref-component">
+            <option value="base">Global (base)</option>
+            <option value="26">Professional (26)</option>
+            <option value="TC">Technical (TC)</option>
+          </select>
+        </div>
+      </form>
+      <div id="reference-result" class="reference-result" aria-live="polite"></div>
+      <p class="caveat">Clinician rates only. These figures are not a hospital price, an insurer allowance or an amount you owe. Where CMS marks a row NA for a setting, the technical and global components do not apply there.</p>
+      <h2>Financial assistance</h2>
+      <form class="controls" id="fpl-form">
+        <div class="field">
+          <label for="fpl-region">Region</label>
+          <select id="fpl-region">
+            <option value="contiguous">Contiguous states and DC</option>
+            <option value="alaska">Alaska</option>
+            <option value="hawaii">Hawaii</option>
+          </select>
+        </div>
+        <div class="field field-num">
+          <label for="fpl-size">Household size</label>
+          <input id="fpl-size" type="number" min="1" max="50" step="1" value="3">
+        </div>
+        <div class="field field-num">
+          <label for="fpl-income">Annual income</label>
+          <input id="fpl-income" type="number" min="0" max="1000000" step=".01" value="40000">
+        </div>
+      </form>
+      <div id="fpl-result" aria-live="polite"></div>
+      <p class="caveat">Assistance rules are hospital-specific. IRS section 501(r) requires covered nonprofit hospitals to publish a financial assistance policy, but no federal law fixes a required discount percentage. Read the policy of the hospital that billed you.</p>
+      <h2>Sources</h2>
+      <div id="sources"></div>
+    </section>
+    <section data-panel="worksheet" id="worksheet-panel" hidden aria-label="Dispute worksheet">
+      <div class="worksheet-controls" data-no-print>
+        <div class="segmented" role="group" aria-label="Worksheet language">
+          <button type="button" data-language="en" aria-pressed="true">English</button>
+          <button type="button" data-language="es" aria-pressed="false">Espa&#241;ol</button>
+        </div>
+        <button type="button" id="print-sheet">Print worksheet</button>
+      </div>
+      <article id="worksheet-paper" class="worksheet-paper" lang="en">
+        <h1 id="worksheet-title" tabindex="-1"></h1>
+        <div id="worksheet-body"></div>
+      </article>
+    </section>
+  </div>
+</main>
+<footer class="foot">
+  <p>ClearBill is a practice tool built on fictional bills. It is not medical, billing or legal advice, and nothing you type leaves this browser.</p>
+</footer>
+<p id="announcer" role="status" class="sr-only"></p>
+<script type="module" src="./src/app.js"></script>
+</body>
+</html>

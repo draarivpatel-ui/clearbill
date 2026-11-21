@@ -1,0 +1,161 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-11-21T00:00:00Z",
+  "title": "Design System: ClearBill",
+  "extensions": {
+    "colorMeta": {
+      "paper": {
+        "role": "neutral",
+        "displayName": "Ledger Paper",
+        "canonical": "#fffdf7",
+        "tonalRamp": ["#d8d0c3", "#e6e1d5", "#efeade", "#f7f3e9", "#faf7ee", "#fdfaf2", "#fffdf7", "#ffffff"]
+      },
+      "oat-desk": {
+        "role": "neutral",
+        "displayName": "Pale Oat Desk",
+        "canonical": "#f1eee6",
+        "tonalRamp": ["#b3ac9c", "#c6c0b1", "#d8d2c4", "#e3ded1", "#eae4d6", "#f1eee6", "#f7f4ec", "#fdfaf2"]
+      },
+      "ink": {
+        "role": "primary",
+        "displayName": "Printing Ink",
+        "canonical": "#24241f",
+        "tonalRamp": ["#1a1a16", "#24241f", "#35352e", "#4b4a41", "#5d5a51", "#8a877b", "#b7b1a2", "#d8d0c3"]
+      },
+      "brick": {
+        "role": "primary",
+        "displayName": "Examiner Brick",
+        "canonical": "#9b3c28",
+        "tonalRamp": ["#5e2418", "#7a2f1f", "#9b3c28", "#b1503a", "#c26a52", "#d08a72", "#e0ac9a", "#efcabe"]
+      },
+      "forest": {
+        "role": "secondary",
+        "displayName": "Verified Forest",
+        "canonical": "#296050",
+        "tonalRamp": ["#17392e", "#1e4a3c", "#296050", "#367463", "#47897a", "#64a191", "#8cbcae", "#b8d4cb"]
+      },
+      "muted-graphite": {
+        "role": "neutral",
+        "displayName": "Muted Graphite",
+        "canonical": "#5d5a51",
+        "tonalRamp": ["#3c3a33", "#4c4a42", "#5d5a51", "#716e63", "#8a877b", "#a39c8c", "#bdb8ab", "#d8d4c8"]
+      },
+      "rule-tan": {
+        "role": "neutral",
+        "displayName": "Rule Tan",
+        "canonical": "#d8d0c3",
+        "tonalRamp": ["#a89f8f", "#bab1a0", "#cbc2b1", "#d8d0c3", "#e2dbd0", "#eae5dc", "#f1ede5", "#f8f5ef"]
+      }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "Document Voice", "purpose": "Case titles and document headings only; never interface furniture." },
+      "label": { "displayName": "Tracked Label", "purpose": "Uppercase rail headings, field labels, table heads and finding tags." },
+      "data": { "displayName": "Evidence Mono", "purpose": "Procedure codes; all figures elsewhere use tabular numerals." }
+    },
+    "shadows": [
+      { "name": "paper-lift", "value": "0 2px 6px rgba(36,36,31,.07), 0 12px 26px rgba(36,36,31,.05)", "purpose": "The only shadow in the system: the worksheet sheet resting on the desk." }
+    ],
+    "motion": [
+      { "name": "ease-out", "value": "cubic-bezier(0.2, 0.7, 0.2, 1)", "purpose": "140-150ms hover and state transitions on buttons, links and rail entries." }
+    ],
+    "breakpoints": [
+      { "name": "rail-fold", "value": "1080px" },
+      { "name": "grid-stack", "value": "760px" },
+      { "name": "table-stack", "value": "560px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "The one filled action (Open dispute worksheet); ink at rest, brick on hover.",
+      "html": "<button class=\"ds-btn-primary\" type=\"button\">Open dispute worksheet</button>",
+      "css": ".ds-btn-primary { appearance: none; border: 1px solid #24241f; border-radius: 3px; background: #24241f; color: #fffdf7; padding: 9px 16px; font: 600 13px 'Avenir Next', Avenir, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif; letter-spacing: .06em; cursor: pointer; transition: background .14s cubic-bezier(.2,.7,.2,1), border-color .14s; } .ds-btn-primary:hover { background: #9b3c28; border-color: #9b3c28; } .ds-btn-primary:focus-visible { outline: 2px solid #24241f; outline-offset: 2px; }"
+    },
+    {
+      "name": "Ghost Button",
+      "kind": "button",
+      "refersTo": "button-ghost",
+      "description": "Secondary desk actions (export, verify, dismiss); paper fill that inverts on hover.",
+      "html": "<button class=\"ds-btn-ghost\" type=\"button\">Export audit bundle</button>",
+      "css": ".ds-btn-ghost { appearance: none; border: 1px solid #24241f; border-radius: 3px; background: #fffdf7; color: #24241f; padding: 9px 16px; font: 600 13px 'Avenir Next', Avenir, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif; letter-spacing: .06em; cursor: pointer; transition: background .14s, color .14s; } .ds-btn-ghost:hover { background: #24241f; color: #fffdf7; } .ds-btn-ghost:focus-visible { outline: 2px solid #24241f; outline-offset: 2px; }"
+    },
+    {
+      "name": "Workbench Nav",
+      "kind": "nav",
+      "refersTo": "nav-button",
+      "description": "Uppercase destinations on the dark masthead; the active view carries a light brick inset rule.",
+      "html": "<nav class=\"ds-nav\" aria-label=\"Workbench\"><button class=\"ds-nav-btn is-active\" type=\"button\" aria-pressed=\"true\">Audit</button><button class=\"ds-nav-btn\" type=\"button\" aria-pressed=\"false\">Reference</button><button class=\"ds-nav-btn\" type=\"button\" aria-pressed=\"false\">Worksheet</button></nav>",
+      "css": ".ds-nav { display: flex; gap: 2px 22px; background: #24241f; padding: 0 12px; } .ds-nav-btn { appearance: none; border: 0; background: none; padding: 16px 2px 14px; color: #b7b1a2; font: 600 13px 'Avenir Next', Avenir, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif; letter-spacing: .12em; text-transform: uppercase; cursor: pointer; box-shadow: inset 0 -2px 0 transparent; } .ds-nav-btn:hover { color: #fffdf7; } .ds-nav-btn.is-active { color: #fffdf7; box-shadow: inset 0 -2px 0 #d07a60; } .ds-nav-btn:focus-visible { outline: 2px solid #f1eee6; outline-offset: 2px; }"
+    },
+    {
+      "name": "Case Rail Entry",
+      "kind": "custom",
+      "refersTo": "case-button",
+      "description": "A fictional case as a ledger line: tabular index, name and detail between hairlines.",
+      "html": "<button class=\"ds-case is-active\" type=\"button\" aria-pressed=\"true\"><span class=\"ds-case-index\">1</span><span><span class=\"ds-case-name\">ER visit</span><br><span class=\"ds-case-detail\">Unbundled labs and duplicate charges</span></span></button>",
+      "css": ".ds-case { appearance: none; display: grid; grid-template-columns: 2ch 1fr; column-gap: 10px; width: 220px; text-align: left; background: #fffdf7; border: 0; border-top: 1px solid #d8d0c3; border-bottom: 1px solid #d8d0c3; padding: 13px 4px; color: #24241f; font: 400 15px 'Avenir Next', Avenir, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif; cursor: pointer; } .ds-case-index { font: 400 16px/1.4 Georgia, 'Times New Roman', serif; font-variant-numeric: tabular-nums; color: #9b3c28; text-align: right; padding-right: 4px; } .ds-case-name { font-weight: 600; } .ds-case-detail { font-size: 12.5px; color: #5d5a51; } .ds-case:focus-visible { outline: 2px solid #24241f; outline-offset: 2px; }"
+    },
+    {
+      "name": "Ledger Field",
+      "kind": "input",
+      "refersTo": "input-field",
+      "description": "Small-caps label over a paper field with a tan rule and brick caret.",
+      "html": "<label class=\"ds-field\"><span class=\"ds-field-label\">Annual income</span><input class=\"ds-field-input\" type=\"number\" value=\"40000\"></label>",
+      "css": ".ds-field { display: flex; flex-direction: column; gap: 6px; width: 200px; font: 400 14px 'Avenir Next', Avenir, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif; } .ds-field-label { font-size: 11.5px; font-weight: 700; letter-spacing: .13em; text-transform: uppercase; color: #5d5a51; } .ds-field-input { appearance: none; border: 1px solid #d8d0c3; border-radius: 3px; background: #fffdf7; color: #24241f; padding: 8px 10px; min-height: 38px; font-size: 14px; font-variant-numeric: tabular-nums; caret-color: #9b3c28; } .ds-field-input:hover { border-color: #5d5a51; } .ds-field-input:focus-visible { border-color: #24241f; outline: 2px solid #24241f; outline-offset: 2px; }"
+    },
+    {
+      "name": "Receipt Ledger Row",
+      "kind": "custom",
+      "refersTo": "table-row",
+      "description": "Ruled receipt row with a mono code, tabular money and the flag tint for a line under scrutiny.",
+      "html": "<table class=\"ds-ledger\"><thead><tr><th>Code</th><th>Description</th><th class=\"ds-money\">Charged</th></tr></thead><tbody><tr><td class=\"ds-code\">99284</td><td>ER assessment, level 4</td><td class=\"ds-money\">$1,480.00</td></tr><tr class=\"ds-flag\"><td class=\"ds-code\">82947</td><td>Blood glucose measurement</td><td class=\"ds-money\">$39.00</td></tr></tbody></table>",
+      "css": ".ds-ledger { width: 100%; border-collapse: collapse; background: #fffdf7; color: #24241f; font: 400 14px 'Avenir Next', Avenir, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif; } .ds-ledger th { padding: 8px 10px 8px 0; border-bottom: 1px solid #24241f; text-align: left; font-size: 11.5px; font-weight: 700; letter-spacing: .13em; text-transform: uppercase; color: #5d5a51; } .ds-ledger td { padding: 9px 10px 9px 0; border-bottom: 1px solid #d8d0c3; } .ds-ledger tbody tr:nth-child(even) { background: #f7f3e9; } .ds-ledger tr.ds-flag { background: #f4e6df; } .ds-ledger .ds-code { font-family: ui-monospace, 'SF Mono', Menlo, Consolas, monospace; font-size: .92em; } .ds-ledger .ds-money { text-align: right; white-space: nowrap; font-variant-numeric: tabular-nums; }"
+    },
+    {
+      "name": "Finding Row",
+      "kind": "custom",
+      "refersTo": "finding",
+      "description": "One numbered entry in the order of evidence: brick index, body, small-caps tag, muted references.",
+      "html": "<div class=\"ds-finding\"><span class=\"ds-finding-index\">1</span><div class=\"ds-finding-body\">The panel line and the glucose line are billed together; NCCI treats the glucose test as part of the panel.<span class=\"ds-finding-tag\">Bundling question</span><div class=\"ds-finding-refs\">NCCI PTP example, laboratory</div></div></div>",
+      "css": ".ds-finding { display: grid; grid-template-columns: 2.4em 1fr; padding: 14px 0; border-top: 1px solid #d8d0c3; color: #24241f; font: 400 14px/1.5 'Avenir Next', Avenir, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif; } .ds-finding-index { padding-right: 12px; font: 400 22px/1.25 Georgia, 'Times New Roman', serif; font-variant-numeric: tabular-nums; color: #9b3c28; text-align: right; } .ds-finding-tag { display: inline-block; margin-top: 3px; margin-left: 8px; font-size: 11px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: #9b3c28; } .ds-finding-refs { margin-top: 6px; font-size: 12.5px; color: #5d5a51; }"
+    },
+    {
+      "name": "Language Segment",
+      "kind": "button",
+      "refersTo": "segmented",
+      "description": "Joined English and Spanish switch for the worksheet; the pressed segment is ink-filled.",
+      "html": "<div class=\"ds-seg\" role=\"group\" aria-label=\"Worksheet language\"><button class=\"ds-seg-btn is-on\" type=\"button\" aria-pressed=\"true\">English</button><button class=\"ds-seg-btn\" type=\"button\" aria-pressed=\"false\">Espa&#241;ol</button></div>",
+      "css": ".ds-seg { display: inline-flex; border: 1px solid #24241f; border-radius: 3px; overflow: hidden; } .ds-seg-btn { appearance: none; border: 0; background: #fffdf7; color: #5d5a51; padding: 8px 14px; font: 600 13px 'Avenir Next', Avenir, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif; cursor: pointer; } .ds-seg-btn + .ds-seg-btn { border-left: 1px solid #24241f; } .ds-seg-btn:hover { color: #24241f; } .ds-seg-btn.is-on { background: #24241f; color: #fffdf7; } .ds-seg-btn:focus-visible { outline: 2px solid #24241f; outline-offset: 2px; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Document Examination Desk",
+    "overview": "ClearBill is a workbench, not a brochure. The screen reads as a desk where a learner has spread out papers: a pale oat desk surface, a sheet of ruled receipt paper under examination, and a margin of numbered findings beside it. Everything on the desk is a document or a rule, so depth comes from paper tone and ink rules rather than cards, shadows or chrome.\n\nThe palette is editorial and warm: ink black, ledger tan, a brick red reserved for flags and attention, and a forest green reserved for verified, linked or clean states. Type pairs a Georgia document voice (case titles, finding numbers, totals) with a humanist sans for interface furniture. The only ornaments are the ones a real bill would carry: ruled lines, alternating paper tones, a double-ruled total, a torn lower edge and the drawn receipt mark.",
+    "keyCharacteristics": [
+      "Paper surfaces and ink rules instead of cards; depth is tonal, never decorative.",
+      "One red pen: brick marks flags, the fiction warning and focus, nothing else.",
+      "Numbers are evidence: tabular numerals everywhere a figure can be checked.",
+      "The receipt is the hero object; the rest of the page is furniture that stays quiet."
+    ],
+    "rules": [
+      { "name": "The One Red Pen Rule", "body": "Brick appears only where the examiner would mark: flags, warnings, the active line under scrutiny, focus. Never as background, brand color or decoration.", "section": "colors" },
+      { "name": "The Two Papers Rule", "body": "Surfaces are Paper or Paper Dim, alternating. No third surface color and no white that is not paper.", "section": "colors" },
+      { "name": "The Document Voice Rule", "body": "Georgia is only for content that belongs to the paper under review (titles, indices, computed totals). Interface furniture never sets Georgia.", "section": "typography" },
+      { "name": "The Flat-By-Default Rule", "body": "No shadow anywhere except the worksheet sheet. If a surface needs separation, reach for a rule or a tone step first.", "section": "elevation" }
+    ],
+    "dos": [
+      "Do set money, meta and index figures with font-variant-numeric: tabular-nums.",
+      "Do separate surfaces with 1px rule-tan lines, and close totals with a 3px double ink rule.",
+      "Do keep brick for flags and focus; keep forest for links and clean or ready states.",
+      "Do keep labels in the uppercase tracked label style; headings stay Georgia."
+    ],
+    "donts": [
+      "Don't introduce cards, nested panels, gradients or decorative shadows; the desk is flat.",
+      "Don't add kickers, eyebrows or taglines; the title stands alone.",
+      "Don't use the receipt mark, zigzag edge or double rule on anything that is not a document.",
+      "Don't set interface text in Georgia or document figures without tabular numerals."
+    ]
+  }
+}
