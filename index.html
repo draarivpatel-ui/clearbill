@@ -267,6 +267,8 @@
       <h2>Reasoning trace</h2>
       <ol id="reason-trace" class="reason-trace"></ol>
       <h2>What-if negotiation simulator</h2>
+      <div class="reason-sim">
+      <div class="reason-sim-controls">
       <form class="controls" id="reason-controls">
         <div class="field slider-field">
           <label for="reason-removal">Disputed charges removed <output id="reason-removal-out" for="reason-removal"></output></label>
@@ -282,7 +284,9 @@
         </div>
       </form>
       <div id="reason-delta" class="reason-delta" aria-live="polite"></div>
-      <div id="reason-waterfall" class="lab-chart"></div>
+      </div>
+      <div id="reason-waterfall" class="lab-chart reason-waterfall"></div>
+      </div>
       <h2>Appeal action plan</h2>
       <div id="reason-plan" class="lab-block"></div>
       <details class="tool-detail" id="reason-letter-detail">
@@ -290,6 +294,7 @@
         <div class="actions">
           <button type="button" id="reason-letter-copy">Copy letter</button>
           <button type="button" id="reason-letter-download">Download letter</button>
+          <button type="button" id="reason-letter-print">Print letter</button>
         </div>
         <pre id="reason-letter" class="reason-letter" tabindex="0"></pre>
         <p id="reason-digest" class="lab-digest"></p>
