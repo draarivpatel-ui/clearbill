@@ -1,9 +1,9 @@
 const prefix = 'clearbill-';
-const cacheName = `${prefix}2026q4-v2`;
+const cacheName = `${prefix}2026q4-v3`;
 const root = self.registration.scope;
 const paths = [
   'index.html', 'styles.css', 'favicon.svg', 'src/app.js', 'src/data.js', 'src/fixtures.js',
-  'src/engine.js', 'src/exchange.js', 'src/worksheet.js', 'src/sensitivity-lab.js',
+  'src/engine.js', 'src/exchange.js', 'src/worksheet.js', 'src/sensitivity-lab.js', 'src/ai-appeal-reasoning.js',
 ];
 const urls = new Set(paths.map(path => new URL(path, root).href));
 const assetPaths = new Set(paths.map(path => new URL(path, root).pathname));

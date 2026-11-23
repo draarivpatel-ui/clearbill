@@ -8,6 +8,7 @@ const $ = id => document.getElementById(id);
 const all = selector => [...document.querySelectorAll(selector)];
 const state = { view: 'audit', language: 'en', snapshot: createCase('demo-er'), report: null, fragment: null, build: 0 };
 const lab = { api: null, decode: null };
+const reasoning = { api: null };
 const codeOrder = [
   '99281', '99282', '99283', '99284', '99285', '99213', '71046', '70551', '72148', '74177', '80053', '80048',
   '80061', '82465', '84478', '83718', '82947', '85025', '36415', '45385', '45380', 'G0514', 'G2211',
@@ -68,6 +69,7 @@ function showView(view, focus = true) {
   for (const panel of all('[data-panel]')) panel.hidden = panel.dataset.panel !== view;
   if (view === 'worksheet') renderWorksheet();
   if (view === 'reference') renderReference();
+  if (view === 'reasoning') reasoning.api?.update(state.snapshot);
   if (focus) $(titleFor(view)).focus();
 }
 
@@ -460,6 +462,13 @@ function initialize() {
     lab.decode = null;
     for (const button of all('[data-view=lab]')) button.remove();
     $('lab-panel')?.remove();
+  });
+  import('./ai-appeal-reasoning.js').then(module => {
+    reasoning.api = module.mountReasoningLab($('reasoning-panel'));
+  }).catch(() => {
+    reasoning.api = null;
+    for (const button of all('[data-view=reasoning]')) button.remove();
+    $('reasoning-panel')?.remove();
   });
   window.addEventListener('hashchange', () => {
     if (acceptSealedLink()) {
