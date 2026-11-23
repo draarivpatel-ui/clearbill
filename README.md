@@ -26,6 +26,7 @@ Open `http://127.0.0.1:4173/clearbill/`. The included server only serves the sta
 - In **Reference**, select a locality, code, service setting and imaging component. Each price shows its work, practice expense and malpractice inputs. The same view has a fictional household guideline screener.
 - In **Worksheet**, switch English or Spanish and print. The original patient responsibility is shown as reported, not as a recommended amount to pay.
 - In **Export and verify evidence**, save the CSV or canonical audit JSON. Use the verifier in the same browser, or run `npm run verify -- path/to/audit.json`. A digest verifies matching bytes and replay; it is not a signature or proof of origin.
+- In **Sensitivity lab**, compare a procedure across Houston, Manhattan and Iowa for office and facility settings, sweep the inclusive `$400` estimate screen and 120-day window plus 2026 poverty-guideline example bands, and replay the three fictional cases with modifier-evidence probes. Export a digest-stamped JSON, CSV or Markdown brief, or a `#cbl=` link that restores only the lab controls. The lab's SHA-256 is computed in-page without Web Crypto; it detects edits and does not authenticate a sender.
 
 ## Method and sources
 
@@ -59,8 +60,11 @@ Source archive fingerprints for reproduction:
 ```sh
 nice -n 15 npm test
 npm run test:browser
+node scripts/lab-check.mjs
 ```
 
-The Node suite checks independently calculated references, published unit limits, threshold and time boundaries, exact-cent reconciliation, bounded input perturbations, both export formats and authenticated decryption. The Chrome check uses a throwaway headless profile with no logged-in accounts. Set `CHROME_PATH` if the Chrome executable differs. It tests both layouts, in-browser imports and exports, service worker control, an offline reload and actual Letter PDF page counts for both worksheet languages. It captures `docs/desktop.png`, `docs/dispute.png` and `docs/mobile.png`.
+The Node suite (1,249 tests) checks independently calculated references, published unit limits, threshold and time boundaries, exact-cent reconciliation, bounded input perturbations, both export formats and authenticated decryption. For the sensitivity lab it adds pure-JS SHA-256 vectors and seeded parity against `node:crypto` and Web Crypto, locality-by-setting formula parity across the whole catalog, boundary sweeps, fictional case replay counts, formula-safe CSV layout, digest parity across JSON, CSV and Markdown, tamper rejection, and hostile bookmark inputs.
+
+Both Chrome checks use a throwaway headless profile with no logged-in accounts. Set `CHROME_PATH` if the Chrome executable differs. `test:browser` (22 checks) tests both layouts, in-browser imports and exports, service worker control, an offline reload and actual Letter PDF page counts for both worksheet languages. It captures `docs/desktop.png`, `docs/dispute.png` and `docs/mobile.png`. `lab-check` (18 checks) exercises real pointer clicks on the lab controls and SVG markers, digest verify and tamper actions, the 19/19 in-page self-tests, English and Spanish, full `#cbl=` bookmark restore across a reload, and hostile-fragment rejection, with zero console errors, page errors, external requests and horizontal overflow.
 
 The synthetic checks demonstrate expected behavior on known inputs, not precision or recall across patient bills, measured savings, or patient outcomes.

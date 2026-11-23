@@ -7,7 +7,7 @@ export const CSP = "default-src 'none'; script-src 'self'; style-src 'self'; img
 const mime = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.css': 'text/css; charset=utf-8', '.svg': 'image/svg+xml' };
 const assets = new Set([
   'index.html', 'styles.css', 'favicon.svg', 'sw.js', 'src/app.js', 'src/data.js', 'src/engine.js',
-  'src/exchange.js', 'src/fixtures.js', 'src/worksheet.js',
+  'src/exchange.js', 'src/fixtures.js', 'src/worksheet.js', 'src/sensitivity-lab.js',
 ]);
 const root = new URL('../', import.meta.url);
 

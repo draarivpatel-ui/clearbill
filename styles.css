@@ -294,6 +294,7 @@ a:hover {
 
 .locality label,
 .field > label,
+.field > .field-label,
 #share-open-form > label {
   display: block;
   margin-bottom: 7px;
@@ -1116,6 +1117,217 @@ table.formula-table th {
   color: var(--muted);
 }
 
+/* Sensitivity lab */
+
+.lab-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+#lab-panel > h2,
+.lab-subhead {
+  margin: 34px 0 4px;
+  font: 700 20px/1.25 var(--font-display);
+}
+
+.lab-subhead {
+  margin-top: 22px;
+  font-size: 17px;
+}
+
+.lab-block {
+  margin: 10px 0 20px;
+}
+
+.lab-table table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.lab-table th {
+  padding: 8px 10px 8px 0;
+  border-bottom: 1px solid var(--ink);
+  text-align: left;
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.lab-table td {
+  padding: 9px 10px 9px 0;
+  border-bottom: 1px solid var(--border);
+  vertical-align: middle;
+}
+
+.lab-table th.money,
+.lab-table td.money {
+  text-align: right;
+  white-space: nowrap;
+}
+
+.lab-table tbody tr:nth-child(even) {
+  background: var(--paper-dim);
+}
+
+.lab-chart svg {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+.chart-label {
+  font: 400 10px/1.2 var(--font-body);
+  fill: var(--muted);
+}
+
+.chart-value {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+.chart-loc {
+  font-size: 11px;
+  fill: var(--ink);
+}
+
+.chart-grid {
+  stroke: var(--border);
+  stroke-width: 1;
+}
+
+.chart-axis {
+  stroke: var(--ink);
+  stroke-width: 1;
+}
+
+.seg-work {
+  fill: var(--ink);
+}
+
+.seg-pe {
+  fill: var(--muted);
+}
+
+.seg-mp {
+  fill: var(--on-ink-soft);
+}
+
+.bar-na {
+  fill: none;
+  stroke: var(--muted);
+  stroke-dasharray: 4 3;
+}
+
+.bar-ring {
+  fill: none;
+  stroke: transparent;
+  stroke-width: 2;
+}
+
+.chart-bar:focus {
+  outline: none;
+}
+
+.chart-bar:focus-visible .bar-ring {
+  stroke: var(--ink);
+}
+
+.quad-region {
+  fill: rgba(41, 96, 80, 0.09);
+}
+
+.quad-line {
+  stroke: var(--muted);
+  stroke-width: 1;
+  stroke-dasharray: 5 4;
+}
+
+.quad-zone {
+  fill: var(--forest);
+  font-size: 11px;
+}
+
+.quad-dot {
+  fill: var(--on-ink-soft);
+}
+
+.quad-dot.quad-ok {
+  fill: var(--forest);
+}
+
+.quad-point {
+  fill: var(--ink);
+}
+
+.kinds-cell {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.lab-link-field {
+  flex-basis: 100%;
+  max-width: 480px;
+}
+
+.lab-digest {
+  flex-basis: 100%;
+  margin: 8px 0 0;
+  font: 400 11.5px/1.5 var(--font-mono);
+  color: var(--muted);
+  word-break: break-all;
+}
+
+#lab-status,
+#lab-test-status {
+  flex-basis: 100%;
+  margin: 4px 0 0;
+  font-size: 13.5px;
+  color: var(--muted);
+}
+
+.lab-test-list {
+  list-style: none;
+  margin: 10px 0 0;
+  padding: 0;
+  columns: 2;
+  column-gap: 36px;
+  font-size: 13px;
+}
+
+.lab-test-list li {
+  display: flex;
+  gap: 8px;
+  align-items: baseline;
+  padding: 3px 0;
+  break-inside: avoid;
+}
+
+.test-mark {
+  flex: none;
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+}
+
+.test-pass .test-mark {
+  color: var(--forest);
+}
+
+.test-fail .test-mark {
+  color: var(--brick);
+}
+
+.test-error {
+  color: var(--brick);
+  font-size: 12px;
+}
+
 /* Footer */
 
 .foot {
@@ -1333,6 +1545,10 @@ table.formula-table th {
   .worksheet-paper {
     padding: 26px 20px 32px;
   }
+
+  .lab-test-list {
+    columns: 1;
+  }
 }
 
 /* Print: only the worksheet sheet survives */
@@ -1347,6 +1563,10 @@ table.formula-table th {
 }
 
 @media print {
+  #lab-panel {
+    display: none !important;
+  }
+
   body[data-print="worksheet"] {
     background: #ffffff;
     color: #000000;
