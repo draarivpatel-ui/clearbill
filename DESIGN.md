@@ -15,6 +15,12 @@ colors:
   flag-tint: "#f4e6df"
   forest: "#296050"
   on-ink-soft: "#b7b1a2"
+  forest-tint: "#e5efe9"
+  cobalt: "#2c4f8a"
+  cobalt-tint: "#e8edf5"
+  amber: "#85560c"
+  amber-solid: "#b7801f"
+  amber-tint: "#f8eed8"
   print-ink: "#000000"
   print-stock: "#ffffff"
 typography:
@@ -201,6 +207,15 @@ Corners are nearly square: 3px on buttons, inputs, chips and the segmented contr
 ### Findings
 
 - A numbered order of evidence under a 2px ink rule: brick Georgia indices, body text, a small-caps brick tag, muted rule references, hairline separators. The clean state is a forest line between two rules.
+
+### AI reasoning lab (scoped to `#reasoning-panel`)
+
+- **Semantic tones.** The lab alone adds two working accents beside brick and forest. Cobalt (#2c4f8a) marks modeled or reference values: the protection outcome code, a typical markup band, the projected patient share. Amber (#85560c text, #b7801f fill) marks open questions: UNKNOWN answers, elevated bands, moderate confidence, review-flag counts. Brick keeps flags and outliers; forest keeps YES answers, removals and verified digests. Each tone has a tint and a line color for pills.
+- **Pills.** 3px corners, tinted paper fill, uppercase 10.5px tracked text. They carry YES, NO and UNKNOWN answers, markup bands, confidence scores and per-stage counts. The sentence they summarize always stays beside them in full.
+- **Summary strip.** One paper sheet under a 2px ink rule, ruled into four cells, each with a 3px tone rule on top. Figures use the body face with lining tabular numerals because Georgia's old-style figures are hard to scan in a row of money.
+- **Trace timeline.** Four numbered Georgia nodes on a hairline rail, each stage a paper sheet with a collapsible evidence list. Benchmark rows carry a markup gauge with a 1x reference tick.
+- **Simulator.** Controls and the projected patient share callout on the left, the waterfall on the right; one column below 1180px. Range inputs have a forest fill track and a paper thumb that rings on hover and focus. The waterfall measures its container and switches to labels above bars under 520px so chart text never shrinks below its set size.
+- **Letter.** A Georgia sheet under a double ink rule with the system's worksheet shadow, because it is a page resting on the desk. `body[data-print="letter"]` prints the letter and its SHA-256 line alone.
 
 ## Do's and Don'ts
 

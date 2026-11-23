@@ -575,97 +575,213 @@ export function mountReasoningLab(panel) {
   };
   const announce = text => { $('reason-status').textContent = text; };
 
+  const BAND_TONE = Object.freeze({
+    outlier: 'brick', elevated: 'amber', typical: 'cobalt', 'at-reference': 'forest', 'no-reference': 'muted',
+  });
+  const ANSWER_TONE = Object.freeze({ yes: 'forest', no: 'brick', unknown: 'amber' });
+  const CONFIDENCE_TONE = Object.freeze({ high: 'brick', moderate: 'amber', exploratory: 'cobalt' });
+  const pill = (text, tone) => {
+    const node = el('span', text, 'reason-pill');
+    node.dataset.tone = tone;
+    return node;
+  };
+
   function summary() {
     const dl = el('dl', '', 'reason-cards');
+    const reviewFlags = analysis.coding.filter(item => item.level === 'review').length;
+    const clean = analysis.recoverable.highCents === 0 && analysis.recoverable.lowCents === 0;
     const entries = [
-      ['Questioned range', analysis.recoverable.highCents === 0 && analysis.recoverable.lowCents === 0
-        ? 'None flagged' : `${usd(analysis.recoverable.lowCents)} to ${usd(analysis.recoverable.highCents)}`],
-      ['Protection outcome', analysis.tree.outcome],
-      ['Review flags', `${analysis.coding.filter(item => item.level === 'review').length}`],
-      ['Case', `${CASES[analysis.caseId].name} / ${LOCALITIES[analysis.locality].name}`],
+      ['Questioned range', clean ? 'None flagged' : `${usd(analysis.recoverable.lowCents)} to ${usd(analysis.recoverable.highCents)}`,
+        clean ? 'forest' : 'brick', 'figure'],
+      ['Protection outcome', analysis.tree.outcome, 'cobalt', 'code'],
+      ['Review flags', `${reviewFlags}`, reviewFlags ? 'amber' : 'forest', 'figure'],
+      ['Case', `${CASES[analysis.caseId].name} / ${LOCALITIES[analysis.locality].name}`, 'ink', 'text'],
     ];
-    for (const [name, value] of entries) {
+    for (const [name, value, tone, kind] of entries) {
       const card = el('div', '', 'reason-card');
+      card.dataset.tone = tone;
+      card.dataset.kind = kind;
       card.append(el('dt', name), el('dd', value));
       dl.append(card);
     }
-    $('reason-summary').replaceChildren(dl, el('p', analysis.recoverable.basis, 'ledger-note'));
+    $('reason-summary').replaceChildren(dl, el('p', analysis.recoverable.basis, 'ledger-note reason-basis'));
   }
 
-  function stageTable(stage) {
-    const wrap = el('div', '', 'table-wrap lab-table reason-steps');
-    const table = el('table');
-    table.setAttribute('role', 'table');
-    table.setAttribute('aria-label', stage.title);
-    const head = table.createTHead().insertRow();
-    head.setAttribute('role', 'row');
-    for (const label of ['Step', 'Evidence']) {
-      const th = el('th', label);
-      th.setAttribute('role', 'columnheader');
-      th.scope = 'col';
-      head.append(th);
+  // Markup gauge: the bill's charge as a multiple of the clinician reference, with a 1x reference tick.
+  function gauge(row, maxX100) {
+    const svg = svgEl('svg', { class: 'reason-gauge', viewBox: '0 0 200 10', preserveAspectRatio: 'none', 'aria-hidden': 'true', focusable: 'false' });
+    svg.append(svgEl('rect', { class: 'reason-gauge-track', x: 0, y: 2, width: 200, height: 6, rx: 1 }));
+    const w = Math.max(2, Math.min(200, (row.markupX100 / maxX100) * 200));
+    const fill = svgEl('rect', { class: 'reason-gauge-fill', x: 0, y: 2, width: w.toFixed(1), height: 6, rx: 1 });
+    fill.dataset.tone = BAND_TONE[row.band] || 'muted';
+    svg.append(fill, svgEl('rect', { class: 'reason-gauge-tick', x: ((100 / maxX100) * 200 - 0.75).toFixed(1), y: 0, width: 1.5, height: 10 }));
+    return svg;
+  }
+
+  function stageRows(stage) {
+    const maxX100 = Math.max(200, ...analysis.benchmark.map(row => row.markupX100 ?? 0));
+    const list = el('ul', '', 'reason-rows');
+    list.setAttribute('aria-label', `${stage.title} evidence`);
+    stage.steps.forEach((step, i) => {
+      const li = el('li', '', 'reason-row');
+      const head = el('div', '', 'reason-row-head');
+      head.append(el('span', step.label, 'reason-row-label'));
+      const detail = el('p', '', 'reason-row-detail');
+      let meter = null;
+      if (stage.id === 'benchmark' && analysis.benchmark[i]) {
+        const row = analysis.benchmark[i];
+        head.append(pill(row.band.replace('-', ' '), BAND_TONE[row.band] || 'muted'));
+        if (row.markupX100 !== null) meter = gauge(row, maxX100);
+        detail.textContent = step.detail;
+      } else if (stage.id === 'coding' && analysis.coding[i]) {
+        const item = analysis.coding[i];
+        head.append(pill(`${item.confidence} ${item.confidenceX100}/100`, CONFIDENCE_TONE[item.confidence] || 'muted'));
+        detail.textContent = step.detail;
+      } else if (stage.id === 'coverage' && analysis.tree.branches[i]) {
+        const branch = analysis.tree.branches[i];
+        // The pill carries the answer; a visually hidden separator keeps the sentence intact for assistive tech.
+        head.append(pill(branch.answer.toUpperCase(), ANSWER_TONE[branch.answer] || 'muted'));
+        detail.append(el('span', ' - ', 'sr-only'), branch.detail);
+      } else if (stage.id === 'plan' && analysis.plan[i]) {
+        const item = analysis.plan[i];
+        if (item.effectCents) head.append(pill(usd(item.effectCents), 'brick'));
+        detail.textContent = step.detail;
+      } else {
+        if (stage.id === 'coding') head.append(pill('clean', 'forest'));
+        detail.textContent = step.detail;
+      }
+      li.append(head);
+      if (meter) li.append(meter);
+      li.append(detail);
+      list.append(li);
+    });
+    return list;
+  }
+
+  function stageMetric(stage) {
+    if (stage.id === 'benchmark') {
+      const outliers = analysis.benchmark.filter(row => row.band === 'outlier').length;
+      return pill(`${outliers} outlier${outliers === 1 ? '' : 's'}`, outliers ? 'brick' : 'forest');
     }
-    const body = table.createTBody();
-    for (const step of stage.steps) {
-      const tr = body.insertRow();
-      tr.setAttribute('role', 'row');
-      const a = el('td', step.label);
-      const b = el('td', step.detail);
-      b.dataset.label = 'Evidence';
-      a.dataset.label = 'Step';
-      tr.append(a, b);
+    if (stage.id === 'coding') {
+      const flags = analysis.coding.filter(item => item.level === 'review').length;
+      return pill(`${flags} flag${flags === 1 ? '' : 's'}`, flags ? 'amber' : 'forest');
     }
-    wrap.append(table);
-    return wrap;
+    if (stage.id === 'coverage') {
+      const open = analysis.tree.branches.filter(branch => branch.answer === 'unknown').length;
+      return pill(open ? `${open} unknown` : 'screens answered', open ? 'amber' : 'forest');
+    }
+    return pill(`${analysis.plan.length} steps`, 'ink');
   }
 
   function trace() {
-    $('reason-trace').replaceChildren(...analysis.stages.map(stage => {
+    $('reason-trace').replaceChildren(...analysis.stages.map((stage, index) => {
       const li = el('li', '', 'reason-stage');
-      li.append(el('h3', stage.title), el('p', stage.result, 'reason-stage-result'), stageTable(stage));
+      li.dataset.stage = stage.id;
+      const node = el('span', String(index + 1).padStart(2, '0'), 'reason-node');
+      node.setAttribute('aria-hidden', 'true');
+      const body = el('div', '', 'reason-stage-body');
+      const head = el('div', '', 'reason-stage-head');
+      head.append(el('h3', stage.title), stageMetric(stage));
+      const evidence = el('details', '', 'reason-evidence');
+      evidence.open = stage.id !== 'plan';
+      evidence.append(el('summary', `Evidence (${stage.steps.length})`), stageRows(stage));
+      body.append(head, el('p', stage.result, 'reason-stage-result'), evidence);
+      li.append(node, body);
       return li;
     }));
   }
 
+  let chartWidth = 0;
   function waterfall(simResult) {
-    const width = 660;
-    const barH = 30;
-    const gap = 14;
-    const top = 8;
-    const height = top + simResult.waterfall.length * (barH + gap) + 24;
-    const svg = svgEl('svg', { viewBox: `0 0 ${width} ${height}`, role: 'img', 'aria-label': 'Projected patient share waterfall' });
-    const labelW = 176;
-    const scale = simResult.start > 0 ? (width - labelW - 90) / simResult.start : 0;
-    const barAt = (row, kind) => {
-      const bar = simResult.waterfall[row];
-      const g = svgEl('g', { class: 'chart-bar wf-bar', tabindex: '0', role: 'img',
-        'aria-label': `${bar.label}: ${usd(Math.abs(bar.amount))}` });
+    const host = $('reason-waterfall');
+    const measured = Math.round(host.clientWidth || 0);
+    const style = win.getComputedStyle(host);
+    const inner = measured - (parseFloat(style.paddingLeft) || 0) - (parseFloat(style.paddingRight) || 0);
+    const width = Math.max(300, Math.min(760, inner > 0 ? Math.floor(inner) : 660));
+    chartWidth = measured;
+    const compact = width < 520;
+    const bars = simResult.waterfall;
+    const barH = compact ? 22 : 36;
+    const rowH = compact ? barH + 30 : barH + 32;
+    const top = compact ? 22 : 10;
+    const labelW = compact ? 0 : 190;
+    const gutter = compact ? 8 : 84;
+    const plotW = width - labelW - gutter;
+    const axisY = top + bars.length * rowH - (compact ? 4 : 6);
+    const height = axisY + 26;
+    const scale = simResult.start > 0 ? plotW / simResult.start : 0;
+    const svg = svgEl('svg', { viewBox: `0 0 ${width} ${height}`, width, height, role: 'img',
+      'aria-label': 'Projected patient share waterfall', class: compact ? 'wf-compact' : 'wf-wide' });
+
+    // Gridlines at a round dollar step (1, 2, 2.5 or 5 times a power of ten), about four across.
+    const rawStep = simResult.start / 4;
+    const magnitude = rawStep > 0 ? 10 ** Math.floor(Math.log10(rawStep)) : 1;
+    const step = rawStep > 0 ? [1, 2, 2.5, 5, 10].map(f => f * magnitude).find(v => v >= rawStep) : 1;
+    for (let value = 0; rawStep > 0 && value <= simResult.start + 0.5; value += step) {
+      const x = labelW + value * scale;
+      svg.append(svgEl('line', { class: 'chart-grid wf-grid', x1: x, y1: top - (compact ? 16 : 4), x2: x, y2: axisY }));
+      const tick = svgEl('text', { class: 'chart-label wf-tick', x, y: axisY + 17,
+        'text-anchor': value === 0 ? 'start' : x > labelW + plotW - 24 ? 'end' : 'middle' });
+      tick.textContent = usd(Math.round(value)).replace(/\.00$/, '');
+      svg.append(tick);
+    }
+
+    const barTop = row => top + row * rowH + (compact ? 4 : 0);
+    bars.forEach((bar, row) => {
       const x = labelW + Math.min(bar.from, bar.to) * scale;
       const w = Math.max(Math.abs(bar.to - bar.from) * scale, 2);
-      const y = top + row * (barH + gap);
-      g.append(svgEl('rect', { class: `bar-ring`, x: x - 3, y: y - 3, width: w + 6, height: barH + 6, rx: 3 }));
-      g.append(svgEl('rect', { class: `wf-${kind}`, x, y, width: w, height: barH, rx: 2 }));
-      const label = svgEl('text', { class: 'chart-label', x: 0, y: y + barH / 2 + 4 });
+      const y = barTop(row);
+      if (row < bars.length - 1) {
+        const next = bars[row + 1];
+        const level = bar.kind === 'total' ? bar.to : bar.from;
+        const cx = labelW + level * scale;
+        svg.append(svgEl('line', { class: 'wf-connector', x1: cx, y1: y + barH, x2: cx, y2: barTop(row + 1) }));
+      }
+      const g = svgEl('g', { class: 'chart-bar wf-bar', tabindex: '0', role: 'img',
+        'aria-label': `${bar.label}: ${usd(Math.abs(bar.amount))}` });
+      g.append(svgEl('rect', { class: 'bar-ring', x: x - 3, y: y - 3, width: w + 6, height: barH + 6, rx: 3 }));
+      g.append(svgEl('rect', { class: `wf-${bar.kind}`, x, y, width: w, height: barH, rx: 2 }));
+      const value = `${bar.amount < 0 ? '-' : ''}${usd(Math.abs(bar.amount))}`;
+      const label = svgEl('text', compact
+        ? { class: 'chart-label wf-label', x: 0, y: y - 7 }
+        : { class: 'chart-label wf-label', x: 0, y: y + barH / 2 + 4.5 });
       label.textContent = bar.label;
-      const val = svgEl('text', { class: 'chart-value', x: x + w + 8, y: y + barH / 2 + 4, 'font-size': '12' });
-      val.textContent = `${bar.amount < 0 ? '-' : ''}${usd(Math.abs(bar.amount))}`;
+      const val = svgEl('text', compact
+        ? { class: `chart-value wf-value wf-value-${bar.kind}`, x: width, y: y - 7, 'text-anchor': 'end' }
+        : { class: `chart-value wf-value wf-value-${bar.kind}`, x: x + w + 8, y: y + barH / 2 + 4.5 });
+      val.textContent = value;
       g.append(label, val);
-      return g;
-    };
-    simResult.waterfall.forEach((bar, row) => svg.append(barAt(row, bar.kind)));
-    const axis = svgEl('line', { class: 'chart-axis', x1: labelW, y1: top + simResult.waterfall.length * (barH + gap), x2: labelW + simResult.start * scale, y2: top + simResult.waterfall.length * (barH + gap) });
-    svg.append(axis);
-    $('reason-waterfall').replaceChildren(svg);
+      svg.append(g);
+    });
+    svg.append(svgEl('line', { class: 'chart-axis', x1: labelW, y1: axisY, x2: labelW + plotW, y2: axisY }));
+    host.replaceChildren(svg);
   }
 
+  let lastResult = null;
   function simulate() {
     const result = simulateSettlement(snapshot, analysis, sim);
-    $('reason-removal-out').value = `${sim.removalPct}%`;
-    $('reason-insurer-out').value = `${sim.insurerPct}%`;
-    $('reason-discount-out').value = `${sim.discountPct}%`;
-    $('reason-delta').replaceChildren(
-      el('p', `Projected patient share ${usd(result.final)} (down ${usd(result.delta)} from ${usd(result.start)}).`, 'reason-delta-line'),
+    lastResult = result;
+    for (const [id, key, max] of [['reason-removal', 'removalPct', 100], ['reason-insurer', 'insurerPct', 50], ['reason-discount', 'discountPct', 90]]) {
+      $(`${id}-out`).value = `${sim[key]}%`;
+      $(id).style.setProperty('--fill', `${(sim[key] / max) * 100}%`);
+    }
+    const line = el('p', '', 'reason-delta-line');
+    line.append(
+      el('span', 'Projected patient share', 'reason-delta-label'), ' ',
+      el('strong', usd(result.final), 'reason-delta-figure'), ' ',
+      el('span', '(', 'sr-only'),
+      el('span', `down ${usd(result.delta)}`, 'reason-delta-down'),
+      el('span', ` from ${usd(result.start)}`, 'reason-delta-from'),
+      el('span', ').', 'sr-only'));
+    const meter = svgEl('svg', { class: 'reason-delta-meter', viewBox: '0 0 200 6', preserveAspectRatio: 'none', 'aria-hidden': 'true', focusable: 'false' });
+    const share = result.start > 0 ? (result.final / result.start) * 200 : 0;
+    meter.append(svgEl('rect', { class: 'reason-delta-meter-track', x: 0, y: 0, width: 200, height: 6 }),
+      svgEl('rect', { class: 'reason-delta-meter-fill', x: 0, y: 0, width: share.toFixed(1), height: 6 }));
+    const card = el('div', '', 'reason-delta-card');
+    card.append(line, meter,
       el('p', `Educational model: removal scales the reported patient share in proportion to billed charges, then the two percentage sliders apply in sequence. It is not a prediction or an offer.`, 'ledger-note'));
+    $('reason-delta').replaceChildren(card);
     waterfall(result);
   }
 
@@ -685,7 +801,7 @@ export function mountReasoningLab(panel) {
 
   function letterView() {
     $('reason-letter').textContent = analysis.letter;
-    $('reason-digest').textContent = `SHA-256 ${analysis.digest}`;
+    $('reason-digest').replaceChildren(el('span', 'SHA-256', 'reason-digest-label'), ' ', el('span', analysis.digest, 'reason-digest-hash'));
   }
 
   function render() {
@@ -725,6 +841,24 @@ export function mountReasoningLab(panel) {
     });
   }
   $('reason-controls')?.addEventListener('submit', event => event.preventDefault());
+  let resizeFrame = 0;
+  win.addEventListener('resize', () => {
+    if (resizeFrame) return;
+    resizeFrame = win.requestAnimationFrame(() => {
+      resizeFrame = 0;
+      const host = $('reason-waterfall');
+      if (lastResult && host.clientWidth && Math.round(host.clientWidth) !== chartWidth) waterfall(lastResult);
+    });
+  });
+  $('reason-letter-print')?.addEventListener('click', () => {
+    const detail = $('reason-letter-detail');
+    if (detail) detail.open = true;
+    const previous = doc.body.dataset.print || '';
+    doc.body.dataset.print = 'letter';
+    win.addEventListener('afterprint', () => { doc.body.dataset.print = previous; }, { once: true });
+    win.print();
+    announce('Print dialog opened for the letter.');
+  });
   $('reason-letter-copy').addEventListener('click', () => copy(analysis.letter, 'Letter copied to the clipboard.', $('reason-letter')));
   $('reason-letter-download').addEventListener('click', () => {
     download(`clearbill-${snapshot.id}-dispute-letter.txt`, `${analysis.letter}\nSHA-256 ${analysis.digest}\n`, 'text/plain;charset=utf-8');
