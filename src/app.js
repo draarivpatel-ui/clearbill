@@ -7,6 +7,7 @@ import { COPY, worksheetTopics } from './worksheet.js';
 const $ = id => document.getElementById(id);
 const all = selector => [...document.querySelectorAll(selector)];
 const state = { view: 'audit', language: 'en', snapshot: createCase('demo-er'), report: null, fragment: null, build: 0 };
+const lab = { api: null, decode: null };
 const codeOrder = [
   '99281', '99282', '99283', '99284', '99285', '99213', '71046', '70551', '72148', '74177', '80053', '80048',
   '80061', '82465', '84478', '83718', '82947', '85025', '36415', '45385', '45380', 'G0514', 'G2211',
@@ -448,8 +449,26 @@ function initialize() {
   selectCase('demo-er', undefined, false);
   renderFpl();
   acceptSealedLink();
+  import('./sensitivity-lab.js').then(module => {
+    lab.api = module.mountSensitivityLab($('lab-panel'));
+    lab.decode = module.decodeLabHash;
+    if (location.hash.startsWith('#cbl=')) {
+      if (lab.api.applyState(lab.decode(location.hash))) showView('lab', false);
+    }
+  }).catch(() => {
+    lab.api = null;
+    lab.decode = null;
+    for (const button of all('[data-view=lab]')) button.remove();
+    $('lab-panel')?.remove();
+  });
   window.addEventListener('hashchange', () => {
-    if (acceptSealedLink()) $('open-key').focus();
+    if (acceptSealedLink()) {
+      $('open-key').focus();
+      return;
+    }
+    if (lab.api && location.hash.startsWith('#cbl=')) {
+      if (lab.api.applyState(lab.decode(location.hash))) showView('lab', false);
+    }
   });
 }
 
