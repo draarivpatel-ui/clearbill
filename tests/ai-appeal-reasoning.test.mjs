@@ -157,6 +157,7 @@ test('zero-valued findings do not claim that nothing was flagged', () => {
   const range = recoverableRange(bill, codingFindings(bill, report), report);
   assert.equal(range.highCents, 0);
   assert.doesNotMatch(range.basis, /Nothing was flagged/);
+  assert.match(range.basis, /no questioned amount remains after overlaps/);
 });
 
 test('coverage tree self-pay branches resolve every outcome', () => {
@@ -214,10 +215,12 @@ test('recoverable range matches hand-computed questioned amounts and caps at pat
 
 test('dispute letter is deterministic, digested and cites questioned lines', () => {
   const analysis = analysisFor('demo-er');
-  assert.equal(analysis.letter, disputeLetter(createCase('demo-er'), { plan: analysis.plan }));
+  assert.equal(analysis.letter, disputeLetter(createCase('demo-er'), { plan: analysis.plan, recoverable: analysis.recoverable }));
   assert.equal(analysis.digest, sha256Hex(analysis.letter));
   assert.match(analysis.letter, /fictional dispute letter - practice copy/);
   assert.match(analysis.letter, /Questioned amount \$128\.00 \(L5, L6, L7\)/);
+  assert.match(analysis.letter, /overlap by \$14\.18/);
+  assert.match(analysis.letter, /counts shared dollars once/);
   assert.match(analysis.letter, /\[Your name\]/);
   assert.doesNotMatch(analysis.letter, /[‘’“”–—]/);
 });

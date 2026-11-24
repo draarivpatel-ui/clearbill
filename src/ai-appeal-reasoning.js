@@ -282,11 +282,14 @@ export function recoverableRange(snapshot, coding, report = null) {
   const cap = snapshot.totals.patient;
   const highCents = Math.min(independent, cap);
   const lowCents = Math.min(strong, highCents);
+  const hasReviewFlags = coding.some(item => item.level === 'review');
   return {
     lowCents, highCents, grossQuestionedCents: gross, overlapAdjustmentCents,
-    basis: coding.length === 0
+    basis: !hasReviewFlags
       ? 'Nothing was flagged on this fictional bill.'
-      : `Questioned amounts, not a prediction: the low end counts only the strongest independent items. The high end counts exact-duplicate overlaps once before capping at the reported patient share.${overlapAdjustmentCents ? ` Gross questioned amount ${usd(gross)}; ${usd(overlapAdjustmentCents)} is shared by overlapping duplicate explanations.` : ''}`,
+      : lowCents === 0 && highCents === 0
+        ? 'Flags fired, but no questioned amount remains after overlaps and the patient-share cap.'
+        : `Questioned amounts, not a prediction: the low end counts only the strongest independent items. The high end counts exact-duplicate overlaps once before capping at the reported patient share.${overlapAdjustmentCents ? ` Gross questioned amount ${usd(gross)}; ${usd(overlapAdjustmentCents)} is shared by overlapping duplicate explanations.` : ''}`,
   };
 }
 
@@ -312,6 +315,9 @@ export function disputeLetter(snapshot, analysis) {
       const ids = item.lineIds.length ? ` (${item.lineIds.map(id => id.replace('line-', 'L')).join(', ')})` : '';
       lines.push(`${i + 1}. ${item.action} Questioned amount ${usd(item.effectCents)}${ids}.`);
     });
+    if (analysis.recoverable?.overlapAdjustmentCents) {
+      lines.push(`The questioned amounts above overlap by ${usd(analysis.recoverable.overlapAdjustmentCents)}. The recoverable range counts shared dollars once instead of adding every explanation separately.`);
+    }
   } else {
     lines.push('No specific charge was flagged. Please confirm the bill reconciles with my records.');
   }
@@ -336,7 +342,7 @@ export function analyzeBill(snapshot) {
   const tree = coverageTree(snapshot, report);
   const plan = actionPlan(snapshot, report, tree, coding);
   const recoverable = recoverableRange(snapshot, coding, report);
-  const letter = disputeLetter(snapshot, { plan });
+  const letter = disputeLetter(snapshot, { plan, recoverable });
   const stages = [
     { id: 'benchmark', title: 'Line benchmark scoring',
       result: `${benchmark.filter(row => row.band !== 'no-reference').length} of ${benchmark.length} lines priced against the clinician reference`,
@@ -359,7 +365,7 @@ export function analyzeBill(snapshot) {
         detail: `${branch.answer.toUpperCase()} - ${branch.detail}`,
       })) },
     { id: 'plan', title: 'Appeal strategy',
-      result: `${plan.length} prioritized steps; questioned range ${usd(recoverable.lowCents)} to ${usd(recoverable.highCents)}`,
+      result: `${plan.length} prioritized steps; questioned range ${usd(recoverable.lowCents)} to ${usd(recoverable.highCents)}${recoverable.overlapAdjustmentCents ? `; ${usd(recoverable.overlapAdjustmentCents)} shared across overlapping explanations` : ''}`,
       steps: plan.map(item => ({
         label: `${item.priority}. ${item.action}`,
         detail: `${item.rationale}${item.effectCents ? ` Questioned amount ${usd(item.effectCents)}.` : ''}`,
@@ -633,7 +639,7 @@ export function mountReasoningLab(panel) {
   function summary() {
     const dl = el('dl', '', 'reason-cards');
     const reviewFlags = analysis.coding.filter(item => item.level === 'review').length;
-    const clean = analysis.recoverable.highCents === 0 && analysis.recoverable.lowCents === 0;
+    const clean = reviewFlags === 0 && analysis.recoverable.highCents === 0 && analysis.recoverable.lowCents === 0;
     const entries = [
       ['Questioned range', clean ? 'None flagged' : `${usd(analysis.recoverable.lowCents)} to ${usd(analysis.recoverable.highCents)}`,
         clean ? 'forest' : 'brick', 'figure'],
@@ -840,7 +846,11 @@ export function mountReasoningLab(panel) {
       li.append(badge, body);
       list.append(li);
     }
-    $('reason-plan').replaceChildren(list);
+    const parts = [list];
+    if (analysis.recoverable.overlapAdjustmentCents) {
+      parts.push(el('p', `Questioned amounts overlap by ${usd(analysis.recoverable.overlapAdjustmentCents)}. The range counts shared dollars once instead of adding every explanation separately.`, 'ledger-note plan-overlap'));
+    }
+    $('reason-plan').replaceChildren(...parts);
   }
 
   function letterView() {

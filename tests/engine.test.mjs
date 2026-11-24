@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
-import { CASES, CATALOG, LOCALITIES, PTP } from '../src/data.js';
+import { CASES, CATALOG, LAB_TEST_CODES, LOCALITIES, PTP } from '../src/data.js';
 import { assessPair, audit, calculateReference, compareEstimate, parseDollars, screenFpl, usd, validateSnapshot } from '../src/engine.js';
 import { createCase } from '../src/fixtures.js';
 import { worksheetTopics } from '../src/worksheet.js';
@@ -218,6 +218,17 @@ for (const [code, expected] of [['G0514', 0], ['45385', 1], ['99284', 1]]) {
     if (expected) assert.deepEqual(hits[0].lineIds, ['line-4', 'line-5']);
   });
 }
+
+test('laboratory modifier list tracks every unpriced clinical laboratory code', () => {
+  const unpriced = Object.entries(CATALOG)
+    .filter(([, row]) => Object.keys(row.rows).length === 0)
+    .map(([code]) => code)
+    .sort();
+  assert.equal(unpriced.includes('36415'), true);
+  assert.equal(LAB_TEST_CODES.includes('36415'), false);
+  assert.deepEqual([...LAB_TEST_CODES].sort(), unpriced.filter(code => code !== '36415'));
+});
+
 test('documented repeat laboratory charges are not misread as exact duplicates', () => {
   const bill = createCase('demo-clean');
   const repeated = {
