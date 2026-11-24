@@ -246,6 +246,16 @@ test('repeat-lab evidence does not hide duplicate non-laboratory charges', () =>
   assert.equal(byKind(bill, 'exact-duplicate').length, 1);
 });
 
+
+test('blood draw collection is not a repeat clinical laboratory test', () => {
+  const bill = createCase('demo-clean');
+  const repeated = {
+    ...addedLine(4, '36415', { billed: 1500, modifiers: ['91'], evidence: 'repeat-lab', entity: 'demo-lab' }),
+  };
+  bill.lines.push(repeated, { ...repeated, id: 'line-5' });
+  assert.equal(byKind(bill, 'exact-duplicate').length, 1);
+});
+
 test('daily MUE does not cross providers, dates, or into an institutional bill', () => {
   const bill = createCase('demo-clean');
   bill.lines.push(addedLine(4, '99284'), addedLine(5, '99284', { day: '2026-10-08' }),

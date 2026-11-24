@@ -116,6 +116,49 @@ test('recoverable range does not double count duplicate dollars inside a good fa
   assert.equal(range.highCents, 160000);
 });
 
+test('recoverable range removes bundled-pair cents already removed as duplicates', () => {
+  const bill = createCase('demo-clean');
+  const base = { ...bill.lines[0], day: '2026-10-08', entity: 'demo-lab', setting: 'facility', units: 1, modifiers: [], evidence: 'none' };
+  bill.lines.splice(0, bill.lines.length);
+  bill.lines.push(
+    { ...base, id: 'line-4', code: '80053', billed: 1000 },
+    { ...base, id: 'line-5', code: '82947', billed: 2000 },
+    { ...base, id: 'line-6', code: '82947', billed: 2000 });
+  Object.assign(bill.totals, { billed: 5000, adjustment: 0, allowed: 5000, deductible: 5000, coinsurance: 0, copay: 0, insurer: 0, patient: 5000 });
+  const report = audit(bill);
+  const range = recoverableRange(bill, codingFindings(bill, report), report);
+  assert.equal(range.grossQuestionedCents, 6000);
+  assert.equal(range.overlapAdjustmentCents, 2000);
+  assert.equal(range.highCents, 4000);
+});
+
+test('recoverable range removes duplicate units before counting excess unit cents', () => {
+  const bill = createCase('demo-clean');
+  const base = { ...bill.lines[0], day: '2026-10-08', entity: 'demo-lab', setting: 'facility', units: 3, modifiers: [], evidence: 'none' };
+  bill.lines.splice(0, bill.lines.length);
+  bill.lines.push(
+    { ...base, id: 'line-4', code: '82947', billed: 3000 },
+    { ...base, id: 'line-5', code: '82947', billed: 3000 });
+  Object.assign(bill.totals, { billed: 6000, adjustment: 0, allowed: 6000, deductible: 6000, coinsurance: 0, copay: 0, insurer: 0, patient: 6000 });
+  const report = audit(bill);
+  const range = recoverableRange(bill, codingFindings(bill, report), report);
+  assert.equal(range.grossQuestionedCents, 4000);
+  assert.equal(range.overlapAdjustmentCents, 1000);
+  assert.equal(range.highCents, 3000);
+});
+
+test('zero-valued findings do not claim that nothing was flagged', () => {
+  const bill = createCase('demo-clean');
+  const base = { ...bill.lines[0], day: '2026-10-08', entity: 'demo-lab', setting: 'facility', units: 1, billed: 0, modifiers: [], evidence: 'none' };
+  bill.lines.splice(0, bill.lines.length);
+  bill.lines.push({ ...base, id: 'line-4', code: '82947' }, { ...base, id: 'line-5', code: '82947' });
+  Object.assign(bill.totals, { billed: 0, adjustment: 0, allowed: 0, deductible: 0, coinsurance: 0, copay: 0, insurer: 0, patient: 0 });
+  const report = audit(bill);
+  const range = recoverableRange(bill, codingFindings(bill, report), report);
+  assert.equal(range.highCents, 0);
+  assert.doesNotMatch(range.basis, /Nothing was flagged/);
+});
+
 test('coverage tree self-pay branches resolve every outcome', () => {
   assert.equal(analysisFor('demo-imaging').tree.outcome, 'potential-ppdr');
   assert.equal(analysisFor('demo-imaging').tree.branches.length, 4);
