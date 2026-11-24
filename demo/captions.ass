@@ -12,24 +12,24 @@ Style: Cap,Helvetica,42,&H00FFFFFF,&H000019FF,&H88141414,&H00000000,-1,0,0,0,100
 
 [Events]
 Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
-Dialogue: 0,0:00:00.52,0:00:06.31,Cap,,0,0,0,,ClearBill is a free, offline first workbench that teaches you to read a medical bill the way an auditor would.
-Dialogue: 0,0:00:06.48,0:00:10.45,Cap,,0,0,0,,Every case is fictional, and nothing you type ever leaves the browser.
-Dialogue: 0,0:00:11.07,0:00:17.88,Cap,,0,0,0,,This emergency room bill in Houston carries seven line items, each priced against a fixed Medicare reference snapshot.
-Dialogue: 0,0:00:18.05,0:00:26.62,Cap,,0,0,0,,The explanation of benefits reconciles to the cent. Two thousand four hundred fifty three dollars billed, three hundred dollars of patient share.
-Dialogue: 0,0:00:27.24,0:00:29.96,Cap,,0,0,0,,The audit engine flags four items for review.
-Dialogue: 0,0:00:30.14,0:00:39.32,Cap,,0,0,0,,Two identical chest X ray charges on the same day, a near duplicate inside the tolerance, an unbundled lab pair, and units above the published cap.
-Dialogue: 0,0:00:39.49,0:00:44.44,Cap,,0,0,0,,Every flag links back to the exact lines and cites the C M S source behind the check.
-Dialogue: 0,0:00:45.06,0:00:52.12,Cap,,0,0,0,,The A I reasoning lab turns that audit into a four stage case file. Benchmark, coding, coverage, plan.
-Dialogue: 0,0:00:52.29,0:00:57.80,Cap,,0,0,0,,A summary strip leads with the questioned range, the protection outcome, and the flag count.
-Dialogue: 0,0:00:58.42,0:01:06.45,Cap,,0,0,0,,Stage one scores each line's markup against the clinician reference. The hospital facility fee lands twelve times higher, an outlier.
-Dialogue: 0,0:01:06.62,0:01:11.79,Cap,,0,0,0,,Stage two restates the same findings with a stated confidence and the rule each one rests on.
-Dialogue: 0,0:01:12.41,0:01:21.18,Cap,,0,0,0,,Stage three walks the coverage tree. This emergency bill routes to a No Surprises Act review, every answer marked yes, no, or unknown.
-Dialogue: 0,0:01:21.35,0:01:27.10,Cap,,0,0,0,,Stage four orders the appeal, the repeated charges first, then the pair, then assistance.
-Dialogue: 0,0:01:27.72,0:01:33.62,Cap,,0,0,0,,A what if simulator projects the patient share. Move a slider and the waterfall recomputes on the spot.
-Dialogue: 0,0:01:33.79,0:01:41.30,Cap,,0,0,0,,With the questioned charges removed and a sixty percent assistance discount, the three hundred dollar share falls to about one hundred.
-Dialogue: 0,0:01:41.92,0:01:47.19,Cap,,0,0,0,,The appeal plan reads like a checklist, each step with its rationale and questioned amount.
-Dialogue: 0,0:01:47.36,0:01:53.43,Cap,,0,0,0,,The dispute letter is generated from the same analysis and sealed with an S H A two five six digest.
-Dialogue: 0,0:01:53.60,0:01:56.80,Cap,,0,0,0,,Print renders it as a single page, ready to send.
-Dialogue: 0,0:01:57.42,0:02:04.76,Cap,,0,0,0,,ClearBill runs entirely offline once the service worker is ready. No accounts, no tracking, no network calls.
-Dialogue: 0,0:02:04.93,0:02:13.52,Cap,,0,0,0,,A built in battery reruns twelve self checks on demand, and twelve hundred ninety Node tests verify the engine, the exports, and every edge.
-Dialogue: 0,0:02:14.14,0:02:17.36,Cap,,0,0,0,,ClearBill. Fictional bills, real practice.
+Dialogue: 0,0:00:00.52,0:00:08.29,Cap,,0,0,0,,ClearBill is a free, offline first workbench that teaches you to read a medical bill the way an auditor would.
+Dialogue: 0,0:00:08.46,0:00:13.47,Cap,,0,0,0,,Every case is fictional, and nothing you type ever leaves the browser.
+Dialogue: 0,0:00:14.09,0:00:22.62,Cap,,0,0,0,,This emergency room bill in Houston carries seven line items, each priced against a fixed Medicare reference snapshot.
+Dialogue: 0,0:00:22.79,0:00:33.24,Cap,,0,0,0,,The explanation of benefits reconciles to the cent. Two thousand four hundred fifty three dollars billed, three hundred dollars of patient share.
+Dialogue: 0,0:00:33.86,0:00:37.15,Cap,,0,0,0,,The audit engine flags four items for review.
+Dialogue: 0,0:00:37.32,0:00:47.60,Cap,,0,0,0,,Two identical chest X ray charges on the same day, a near duplicate inside the tolerance, an unbundled lab pair, and units above the published cap.
+Dialogue: 0,0:00:47.77,0:00:53.66,Cap,,0,0,0,,Every flag links back to the exact lines and cites the C M S source behind the check.
+Dialogue: 0,0:00:54.28,0:01:01.41,Cap,,0,0,0,,The A I reasoning lab turns that audit into a four stage case file. Benchmark, coding, coverage, plan.
+Dialogue: 0,0:01:01.58,0:01:08.14,Cap,,0,0,0,,A summary strip leads with the questioned range, the protection outcome, and the flag count.
+Dialogue: 0,0:01:08.77,0:01:18.33,Cap,,0,0,0,,Stage one scores each line's markup against the clinician reference. The hospital facility fee lands twelve times higher, an outlier.
+Dialogue: 0,0:01:18.50,0:01:25.11,Cap,,0,0,0,,Stage two restates the same findings with a stated confidence and the rule each one rests on.
+Dialogue: 0,0:01:25.73,0:01:35.14,Cap,,0,0,0,,Stage three walks the coverage tree. This emergency bill routes to a No Surprises Act review, every answer marked yes, no, or unknown.
+Dialogue: 0,0:01:35.31,0:01:41.68,Cap,,0,0,0,,Stage four orders the appeal, the repeated charges first, then the pair, then assistance.
+Dialogue: 0,0:01:42.30,0:01:49.62,Cap,,0,0,0,,A what if simulator projects the patient share. Move a slider and the waterfall recomputes on the spot.
+Dialogue: 0,0:01:49.79,0:01:59.52,Cap,,0,0,0,,With the questioned charges removed and a sixty percent assistance discount, the three hundred dollar share falls to about one hundred.
+Dialogue: 0,0:02:00.14,0:02:06.67,Cap,,0,0,0,,The appeal plan reads like a checklist, each step with its rationale and questioned amount.
+Dialogue: 0,0:02:06.84,0:02:13.81,Cap,,0,0,0,,The dispute letter is generated from the same analysis and sealed with an S H A two five six digest.
+Dialogue: 0,0:02:13.98,0:02:17.43,Cap,,0,0,0,,Print renders it as a single page, ready to send.
+Dialogue: 0,0:02:18.05,0:02:25.85,Cap,,0,0,0,,ClearBill runs entirely offline once the service worker is ready. No accounts, no tracking, no network calls.
+Dialogue: 0,0:02:26.02,0:02:35.87,Cap,,0,0,0,,A built in battery reruns twelve self checks on demand, and twelve hundred ninety Node tests verify the engine, the exports, and every edge.
+Dialogue: 0,0:02:36.49,0:02:39.66,Cap,,0,0,0,,ClearBill. Fictional bills, real practice.

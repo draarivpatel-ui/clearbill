@@ -1,161 +1,161 @@
 {
- "voice": "Samantha",
- "rate": 175,
+ "voice": "OmniVoice-bf16 (Aariv voice clone)",
+ "seed": 1,
  "sr": 24000,
  "lead": 0.6,
  "gap_sent": 0.3,
  "gap_para": 0.75,
  "tail": 1,
- "total": 138.306,
- "wav_seconds": 138.306,
+ "total": 160.609,
+ "wav_seconds": 160.609,
  "words": 361,
  "sentences": [
   {
    "para": 0,
    "sent": 0,
    "text": "ClearBill is a free, offline first workbench that teaches you to read a medical bill the way an auditor would.",
-   "dur": 5.664,
+   "dur": 7.64,
    "start": 0.6
   },
   {
    "para": 0,
    "sent": 1,
    "text": "Every case is fictional, and nothing you type ever leaves the browser.",
-   "dur": 3.84,
-   "start": 6.564
+   "dur": 4.88,
+   "start": 8.54
   },
   {
    "para": 1,
    "sent": 0,
    "text": "This emergency room bill in Houston carries seven line items, each priced against a fixed Medicare reference snapshot.",
-   "dur": 6.674,
-   "start": 11.153
+   "dur": 8.399,
+   "start": 14.169
   },
   {
    "para": 1,
    "sent": 1,
    "text": "The explanation of benefits reconciles to the cent. Two thousand four hundred fifty three dollars billed, three hundred dollars of patient share.",
-   "dur": 8.439,
-   "start": 18.127
+   "dur": 10.319,
+   "start": 22.869
   },
   {
    "para": 2,
    "sent": 0,
    "text": "The audit engine flags four items for review.",
-   "dur": 2.599,
-   "start": 27.316
+   "dur": 3.16,
+   "start": 33.938
   },
   {
    "para": 2,
    "sent": 1,
    "text": "Two identical chest X ray charges on the same day, a near duplicate inside the tolerance, an unbundled lab pair, and units above the published cap.",
-   "dur": 9.056,
-   "start": 30.216
+   "dur": 10.156,
+   "start": 37.397
   },
   {
    "para": 2,
    "sent": 2,
    "text": "Every flag links back to the exact lines and cites the C M S source behind the check.",
-   "dur": 4.815,
-   "start": 39.571
+   "dur": 5.76,
+   "start": 47.853
   },
   {
    "para": 3,
    "sent": 0,
    "text": "The A I reasoning lab turns that audit into a four stage case file. Benchmark, coding, coverage, plan.",
-   "dur": 6.93,
-   "start": 45.136
+   "dur": 6.996,
+   "start": 54.363
   },
   {
    "para": 3,
    "sent": 1,
    "text": "A summary strip leads with the questioned range, the protection outcome, and the flag count.",
-   "dur": 5.384,
-   "start": 52.366
+   "dur": 6.436,
+   "start": 61.659
   },
   {
    "para": 4,
    "sent": 0,
    "text": "Stage one scores each line's markup against the clinician reference. The hospital facility fee lands twelve times higher, an outlier.",
-   "dur": 7.897,
-   "start": 58.499
+   "dur": 9.437,
+   "start": 68.845
   },
   {
    "para": 4,
    "sent": 1,
    "text": "Stage two restates the same findings with a stated confidence and the rule each one rests on.",
-   "dur": 5.041,
-   "start": 66.696
+   "dur": 6.479,
+   "start": 78.582
   },
   {
    "para": 5,
    "sent": 0,
    "text": "Stage three walks the coverage tree. This emergency bill routes to a No Surprises Act review, every answer marked yes, no, or unknown.",
-   "dur": 8.64,
-   "start": 72.487
+   "dur": 9.279,
+   "start": 85.811
   },
   {
    "para": 5,
    "sent": 1,
    "text": "Stage four orders the appeal, the repeated charges first, then the pair, then assistance.",
-   "dur": 5.621,
-   "start": 81.427
+   "dur": 6.238,
+   "start": 95.39
   },
   {
    "para": 6,
    "sent": 0,
    "text": "A what if simulator projects the patient share. Move a slider and the waterfall recomputes on the spot.",
-   "dur": 5.767,
-   "start": 87.799
+   "dur": 7.195,
+   "start": 102.378
   },
   {
    "para": 6,
    "sent": 1,
    "text": "With the questioned charges removed and a sixty percent assistance discount, the three hundred dollar share falls to about one hundred.",
-   "dur": 7.386,
-   "start": 93.866
+   "dur": 9.598,
+   "start": 109.873
   },
   {
    "para": 7,
    "sent": 0,
    "text": "The appeal plan reads like a checklist, each step with its rationale and questioned amount.",
-   "dur": 5.142,
-   "start": 102.002
+   "dur": 6.397,
+   "start": 120.221
   },
   {
    "para": 7,
    "sent": 1,
    "text": "The dispute letter is generated from the same analysis and sealed with an S H A two five six digest.",
-   "dur": 5.933,
-   "start": 107.444
+   "dur": 6.838,
+   "start": 126.918
   },
   {
    "para": 7,
    "sent": 2,
    "text": "Print renders it as a single page, ready to send.",
-   "dur": 3.075,
-   "start": 113.677
+   "dur": 3.32,
+   "start": 134.056
   },
   {
    "para": 8,
    "sent": 0,
    "text": "ClearBill runs entirely offline once the service worker is ready. No accounts, no tracking, no network calls.",
-   "dur": 7.208,
-   "start": 117.501
+   "dur": 7.675,
+   "start": 138.126
   },
   {
    "para": 8,
    "sent": 1,
    "text": "A built in battery reruns twelve self checks on demand, and twelve hundred ninety Node tests verify the engine, the exports, and every edge.",
-   "dur": 8.46,
-   "start": 125.009
+   "dur": 9.719,
+   "start": 146.1
   },
   {
    "para": 9,
    "sent": 0,
    "text": "ClearBill. Fictional bills, real practice.",
-   "dur": 3.086,
-   "start": 134.22
+   "dur": 3.04,
+   "start": 156.569
   }
  ]
 }
