@@ -218,6 +218,24 @@ for (const [code, expected] of [['G0514', 0], ['45385', 1], ['99284', 1]]) {
     if (expected) assert.deepEqual(hits[0].lineIds, ['line-4', 'line-5']);
   });
 }
+test('documented repeat laboratory charges are not misread as exact duplicates', () => {
+  const bill = createCase('demo-clean');
+  const repeated = {
+    ...addedLine(4, '85025', { billed: 4200, modifiers: ['91'], evidence: 'repeat-lab', entity: 'demo-lab' }),
+  };
+  bill.lines.push(repeated, { ...repeated, id: 'line-5' });
+  assert.equal(byKind(bill, 'exact-duplicate').length, 0);
+});
+
+test('undocumented repeat-looking laboratory charges still flag as exact duplicates', () => {
+  const bill = createCase('demo-clean');
+  const repeated = {
+    ...addedLine(4, '85025', { billed: 4200, modifiers: ['91'], evidence: 'none', entity: 'demo-lab' }),
+  };
+  bill.lines.push(repeated, { ...repeated, id: 'line-5' });
+  assert.equal(byKind(bill, 'exact-duplicate').length, 1);
+});
+
 test('daily MUE does not cross providers, dates, or into an institutional bill', () => {
   const bill = createCase('demo-clean');
   bill.lines.push(addedLine(4, '99284'), addedLine(5, '99284', { day: '2026-10-08' }),

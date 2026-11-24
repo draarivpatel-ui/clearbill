@@ -174,7 +174,7 @@ function groupBy(lines, key) {
 function repeatedLines(lines) {
   const results = [];
   const candidates = lines.filter(line => {
-    const repeat = [...DISTINCT_MODIFIERS, '76', '77'].filter(modifier => modifier !== '91' || !Object.keys(CATALOG[line.code].rows).length);
+    const repeat = [...DISTINCT_MODIFIERS, '76', '77'];
     return !quality(line, repeat).documented.length;
   });
   for (const group of groupBy(candidates, line => `${codeKey(line)}/${line.units}/${[...line.modifiers].sort().join(',')}`).values()) {
