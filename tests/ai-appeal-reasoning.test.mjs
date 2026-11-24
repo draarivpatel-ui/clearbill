@@ -87,6 +87,34 @@ test('patient-total mismatch questions only the overcharged difference', () => {
   assert.equal(other.questionedCents, 0);
 });
 
+test('recoverable range removes cents already questioned by duplicate-line removal', () => {
+  const er = analysisFor('demo-er').recoverable;
+  assert.equal(er.grossQuestionedCents, 17718);
+  assert.equal(er.overlapAdjustmentCents, 1418);
+  assert.equal(er.highCents, 16300);
+  assert(er.highCents < er.grossQuestionedCents, 'the same dollars must not be counted under duplicate and unit theories twice');
+  assert.match(er.basis, /removes overlaps/);
+});
+
+test('recoverable range leaves non-overlapping findings additive', () => {
+  const img = analysisFor('demo-imaging').recoverable;
+  assert.equal(img.grossQuestionedCents, 47500);
+  assert.equal(img.overlapAdjustmentCents, 0);
+  assert.equal(img.highCents, 47500);
+});
+
+test('recoverable range does not double count duplicate dollars inside a good faith estimate gap', () => {
+  const bill = createCase('demo-imaging');
+  bill.lines.push({ ...bill.lines[0], id: 'line-2' });
+  Object.assign(bill.totals, { billed: 225000, allowed: 225000, patient: 225000 });
+  const report = audit(bill);
+  const range = recoverableRange(bill, codingFindings(bill, report), report);
+  assert.equal(range.grossQuestionedCents, 272500);
+  assert.equal(range.overlapAdjustmentCents, 112500);
+  assert.equal(range.lowCents, 160000);
+  assert.equal(range.highCents, 160000);
+});
+
 test('coverage tree self-pay branches resolve every outcome', () => {
   assert.equal(analysisFor('demo-imaging').tree.outcome, 'potential-ppdr');
   assert.equal(analysisFor('demo-imaging').tree.branches.length, 4);
@@ -133,7 +161,7 @@ test('recoverable range matches hand-computed questioned amounts and caps at pat
   assert.deepEqual(
     [analysisFor('demo-er').recoverable, analysisFor('demo-imaging').recoverable, analysisFor('demo-clean').recoverable]
       .map(row => [row.lowCents, row.highCents]),
-    [[12000, 17718], [47500, 47500], [0, 0]]);
+    [[12000, 16300], [47500, 47500], [0, 0]]);
   const huge = createCase('demo-imaging');
   huge.lines[0].billed = 20000000;
   const coding = codingFindings(huge, audit(huge));
@@ -163,7 +191,7 @@ test('simulator leaves the share untouched at zero and never inverts at maximum'
 
 test('simulator computes the exact published waterfall cents', () => {
   const er = simulateSettlement(createCase('demo-er'), analysisFor('demo-er'), DEFAULT_SIM);
-  assert.deepEqual([er.removal, er.insurerAdj, er.discount, er.final, er.delta], [2167, 2783, 6263, 18787, 11213]);
+  assert.deepEqual([er.removal, er.insurerAdj, er.discount, er.final, er.delta], [1993, 2801, 6302, 18904, 11096]);
   const img = simulateSettlement(createCase('demo-imaging'), analysisFor('demo-imaging'), { removalPct: 100, insurerPct: 0, discountPct: 0 });
   assert.equal(img.removal, 47500);
   assert.equal(img.final, img.start - 47500);

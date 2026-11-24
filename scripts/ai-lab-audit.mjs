@@ -154,7 +154,8 @@ async function runViewport(cdp, app, scratch, width, height) {
     await click('[data-view=reasoning]');
     assert.equal(await evaluate(`${q('#reasoning-panel')}.hidden`), false);
     assert.match(await text('#reasoning-title'), /AI reasoning lab/);
-    assert.match(await text('#reason-summary'), /\$120\.00 to \$177\.18/);
+    assert.match(await text('#reason-summary'), /\$120\.00 to \$163\.00/);
+    assert.match(await text('#reason-summary'), /removes overlaps/);
     assert.match(await text('#reason-summary'), /nsa-emergency-review/);
     assert.equal(await evaluate(`document.querySelectorAll('#reason-trace > li').length`), 4);
     assert.match(await text('#reason-trace'), /markup 3\.73x, z 0\.38/);
@@ -166,13 +167,13 @@ async function runViewport(cdp, app, scratch, width, height) {
     await fit('reasoning default');
     mark(`${width}x${height} reasoning trace, benchmark table and plan render`);
 
-    assert.match(await text('#reason-delta'), /Projected patient share \$187\.87 \(down \$112\.13/);
+    assert.match(await text('#reason-delta'), /Projected patient share \$189\.04 \(down \$110\.96/);
     await set('#reason-removal', '0', 'input');
     assert.match(await text('#reason-delta'), /down \$[0-9,]+\.[0-9]{2} from \$300\.00/);
     await set('#reason-removal', '100', 'input');
     await set('#reason-insurer', '0', 'input');
     await set('#reason-discount', '0', 'input');
-    assert.match(await text('#reason-delta'), /Projected patient share \$278\.33 \(down \$21\.67/);
+    assert.match(await text('#reason-delta'), /Projected patient share \$280\.07 \(down \$19\.93/);
     await set('#reason-removal', '0', 'input');
     assert.match(await text('#reason-delta'), /Projected patient share \$300\.00 \(down \$0\.00/);
     assert.equal(await evaluate(`document.querySelectorAll('#reason-waterfall .wf-bar').length`), 5);

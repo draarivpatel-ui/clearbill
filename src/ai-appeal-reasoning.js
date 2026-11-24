@@ -231,18 +231,62 @@ export function actionPlan(snapshot, report, tree, coding) {
   return plan.map((item, index) => ({ priority: index + 1, ...item }));
 }
 
-export function recoverableRange(snapshot, coding) {
-  const strongKinds = ['exact-duplicate', 'gfe-threshold'];
-  const strong = coding.filter(item => strongKinds.includes(item.kind)).reduce((sum, item) => sum + item.questionedCents, 0);
-  const rest = coding.reduce((sum, item) => sum + item.questionedCents, 0);
+export function recoverableRange(snapshot, coding, report = null) {
+  const gross = coding.reduce((sum, item) => sum + item.questionedCents, 0);
+  const lineById = new Map(snapshot.lines.map(line => [line.id, line]));
+  const duplicateCopies = new Set();
+  for (const item of coding) {
+    if (item.kind !== 'exact-duplicate') continue;
+    for (const id of item.lineIds.slice(1)) duplicateCopies.add(id);
+  }
+  const copyBilled = id => lineById.get(id)?.billed ?? 0;
+  const exactIndependent = [...duplicateCopies].reduce((sum, id) => sum + copyBilled(id), 0);
+  let independent = exactIndependent;
+  let strong = exactIndependent;
+
+  for (const item of coding) {
+    if (item.kind === 'exact-duplicate') continue;
+    const lines = item.lineIds.map(id => lineById.get(id)).filter(Boolean);
+    let amount = item.questionedCents;
+    if (item.kind === 'near-duplicate' && lines.length) {
+      const minimum = Math.min(...lines.map(line => line.billed));
+      const overlapping = lines.filter(line => duplicateCopies.has(line.id))
+        .reduce((sum, line) => sum + Math.max(0, line.billed - minimum), 0);
+      amount = Math.max(0, amount - overlapping);
+    } else if (['ptp-no-exception', 'ptp-modifier-unverified', 'ptp-pair-review'].includes(item.kind)) {
+      const target = lines[lines.length - 1];
+      if (target && duplicateCopies.has(target.id)) amount = 0;
+    } else if (item.kind === 'mue-units' && lines.length) {
+      const totalUnits = lines.reduce((sum, line) => sum + line.units, 0);
+      const limit = CATALOG[lines[0].code]?.mue?.[0];
+      if (limit && totalUnits > limit) {
+        const referenceUnit = report?.references?.find(row => row.id === lines[0].id)?.unitCents;
+        const refUnit = referenceUnit ?? (item.questionedCents % (totalUnits - limit) === 0
+          ? item.questionedCents / (totalUnits - limit)
+          : roundHalfUp(item.questionedCents / (totalUnits - limit)));
+        const duplicateUnits = lines.filter(line => duplicateCopies.has(line.id))
+          .reduce((sum, line) => sum + line.units, 0);
+        amount = Math.max(0, totalUnits - duplicateUnits - limit) * refUnit;
+      }
+    } else if (item.kind === 'gfe-threshold') {
+      const scope = new Set(item.lineIds);
+      const overlapping = [...duplicateCopies].filter(id => scope.has(id))
+        .reduce((sum, id) => sum + copyBilled(id), 0);
+      amount = Math.max(0, amount - overlapping);
+      strong += amount;
+    }
+    independent += amount;
+  }
+
+  const overlapAdjustmentCents = Math.max(0, gross - independent);
   const cap = snapshot.totals.patient;
-  const highCents = Math.min(rest, cap);
+  const highCents = Math.min(independent, cap);
   const lowCents = Math.min(strong, highCents);
   return {
-    lowCents, highCents,
+    lowCents, highCents, grossQuestionedCents: gross, overlapAdjustmentCents,
     basis: lowCents === 0 && highCents === 0
       ? 'Nothing was flagged on this fictional bill.'
-      : 'Questioned amounts, not a prediction: the low end counts only the strongest items and the high end caps at the reported patient share.',
+      : 'Questioned amounts, not a prediction: the low end counts only the strongest independent items. The high end removes overlaps before capping at the reported patient share.',
   };
 }
 
@@ -291,7 +335,7 @@ export function analyzeBill(snapshot) {
   const coding = codingFindings(snapshot, report);
   const tree = coverageTree(snapshot, report);
   const plan = actionPlan(snapshot, report, tree, coding);
-  const recoverable = recoverableRange(snapshot, coding);
+  const recoverable = recoverableRange(snapshot, coding, report);
   const letter = disputeLetter(snapshot, { plan });
   const stages = [
     { id: 'benchmark', title: 'Line benchmark scoring',
@@ -491,7 +535,7 @@ export function selfTests() {
     }],
     ['recoverable', () => {
       const er = analyzeBill(fixtureFor('demo-er')).recoverable;
-      check(er.lowCents === 12000 && er.highCents === 17718, 'ER range 12000-17718');
+      check(er.lowCents === 12000 && er.highCents === 16300 && er.overlapAdjustmentCents === 1418, 'ER overlap-aware range 12000-16300');
       const img = analyzeBill(fixtureFor('demo-imaging')).recoverable;
       check(img.lowCents === 47500 && img.highCents === 47500, 'imaging range equals the gap');
       const clean = analyzeBill(fixtureFor('demo-clean')).recoverable;
@@ -505,7 +549,7 @@ export function selfTests() {
       const full = simulateSettlement(snapshot, analysis, { removalPct: 100, insurerPct: 50, discountPct: 90 });
       check(full.final >= 0 && full.final < full.start, 'full sliders reduce but never invert');
       const er = simulateSettlement(snapshot, analysis, { removalPct: 100, insurerPct: 10, discountPct: 25 });
-      check(er.removal === 2167 && er.insurerAdj === 2783 && er.discount === 6263 && er.final === 18787, 'ER waterfall exact cents');
+      check(er.removal === 1993 && er.insurerAdj === 2801 && er.discount === 6302 && er.final === 18904, 'ER waterfall exact cents');
       const img = simulateSettlement(fixtureFor('demo-imaging'), analyzeBill(fixtureFor('demo-imaging')), { removalPct: 100, insurerPct: 0, discountPct: 0 });
       check(img.removal === 47500 && img.final === img.start - 47500, 'self-pay removal is dollar-for-dollar');
       check(img.waterfall[4].amount === img.final, 'waterfall ends at the projection');
