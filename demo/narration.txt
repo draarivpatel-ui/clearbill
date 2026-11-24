@@ -1,0 +1,30 @@
+ClearBill is a free, offline first workbench that teaches you to read a medical bill the way an auditor would.
+Every case is fictional, and nothing you type ever leaves the browser.
+
+This emergency room bill in Houston carries seven line items, each priced against a fixed Medicare reference snapshot.
+The explanation of benefits reconciles to the cent. Two thousand four hundred fifty three dollars billed, three hundred dollars of patient share.
+
+The audit engine flags four items for review.
+Two identical chest X ray charges on the same day, a near duplicate inside the tolerance, an unbundled lab pair, and units above the published cap.
+Every flag links back to the exact lines and cites the C M S source behind the check.
+
+The A I reasoning lab turns that audit into a four stage case file. Benchmark, coding, coverage, plan.
+A summary strip leads with the questioned range, the protection outcome, and the flag count.
+
+Stage one scores each line's markup against the clinician reference. The hospital facility fee lands twelve times higher, an outlier.
+Stage two restates the same findings with a stated confidence and the rule each one rests on.
+
+Stage three walks the coverage tree. This emergency bill routes to a No Surprises Act review, every answer marked yes, no, or unknown.
+Stage four orders the appeal, the repeated charges first, then the pair, then assistance.
+
+A what if simulator projects the patient share. Move a slider and the waterfall recomputes on the spot.
+With the questioned charges removed and a sixty percent assistance discount, the three hundred dollar share falls to about one hundred.
+
+The appeal plan reads like a checklist, each step with its rationale and questioned amount.
+The dispute letter is generated from the same analysis and sealed with an S H A two five six digest.
+Print renders it as a single page, ready to send.
+
+ClearBill runs entirely offline once the service worker is ready. No accounts, no tracking, no network calls.
+A built in battery reruns twelve self checks on demand, and twelve hundred ninety Node tests verify the engine, the exports, and every edge.
+
+ClearBill. Fictional bills, real practice.

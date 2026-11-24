@@ -1,0 +1,16 @@
+$ nice -n 15 npm test
+...
+✔ Markdown keeps tables, digests and no N/A-as-zero rows (0.366167ms)
+✔ mutateBriefText handles edge inputs (0.100667ms)
+✔ selfTests pass and cover the promised checks (17.138292ms)
+✔ selfTest ids have EN and ES names (0.049792ms)
+✔ COPY locales mirror each other (0.053625ms)
+✔ defaults stay inside every documented range (0.022167ms)
+ℹ tests 1290
+ℹ suites 0
+ℹ pass 1290
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 175.30275

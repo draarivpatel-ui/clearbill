@@ -9,6 +9,12 @@
     "start": "node scripts/serve.mjs",
     "test": "node --test tests/*.test.mjs tests/*.test.js",
     "test:browser": "node scripts/browser-check.mjs",
-    "verify": "node scripts/replay.mjs"
+    "verify": "node scripts/replay.mjs",
+    "demo:stage": "node scripts/record-demo.mjs stage",
+    "demo:synth": "node scripts/record-demo.mjs synth",
+    "demo:probe": "node scripts/record-demo.mjs probe",
+    "demo:capture": "node scripts/record-demo.mjs capture",
+    "demo:check": "node scripts/record-demo.mjs check",
+    "demo": "node scripts/record-demo.mjs all"
   }
 }

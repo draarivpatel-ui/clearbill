@@ -1,0 +1,83 @@
+1
+00:00:00,520 --> 00:00:06,314
+ClearBill is a free, offline first workbench that teaches you to read a medical bill the way an auditor would.
+
+2
+00:00:06,484 --> 00:00:10,454
+Every case is fictional, and nothing you type ever leaves the browser.
+
+3
+00:00:11,073 --> 00:00:17,877
+This emergency room bill in Houston carries seven line items, each priced against a fixed Medicare reference snapshot.
+
+4
+00:00:18,047 --> 00:00:26,616
+The explanation of benefits reconciles to the cent. Two thousand four hundred fifty three dollars billed, three hundred dollars of patient share.
+
+5
+00:00:27,236 --> 00:00:29,965
+The audit engine flags four items for review.
+
+6
+00:00:30,136 --> 00:00:39,322
+Two identical chest X ray charges on the same day, a near duplicate inside the tolerance, an unbundled lab pair, and units above the published cap.
+
+7
+00:00:39,491 --> 00:00:44,436
+Every flag links back to the exact lines and cites the C M S source behind the check.
+
+8
+00:00:45,056 --> 00:00:52,116
+The A I reasoning lab turns that audit into a four stage case file. Benchmark, coding, coverage, plan.
+
+9
+00:00:52,286 --> 00:00:57,800
+A summary strip leads with the questioned range, the protection outcome, and the flag count.
+
+10
+00:00:58,419 --> 00:01:06,446
+Stage one scores each line's markup against the clinician reference. The hospital facility fee lands twelve times higher, an outlier.
+
+11
+00:01:06,616 --> 00:01:11,787
+Stage two restates the same findings with a stated confidence and the rule each one rests on.
+
+12
+00:01:12,407 --> 00:01:21,177
+Stage three walks the coverage tree. This emergency bill routes to a No Surprises Act review, every answer marked yes, no, or unknown.
+
+13
+00:01:21,347 --> 00:01:27,098
+Stage four orders the appeal, the repeated charges first, then the pair, then assistance.
+
+14
+00:01:27,719 --> 00:01:33,616
+A what if simulator projects the patient share. Move a slider and the waterfall recomputes on the spot.
+
+15
+00:01:33,786 --> 00:01:41,302
+With the questioned charges removed and a sixty percent assistance discount, the three hundred dollar share falls to about one hundred.
+
+16
+00:01:41,922 --> 00:01:47,194
+The appeal plan reads like a checklist, each step with its rationale and questioned amount.
+
+17
+00:01:47,364 --> 00:01:53,427
+The dispute letter is generated from the same analysis and sealed with an S H A two five six digest.
+
+18
+00:01:53,597 --> 00:01:56,802
+Print renders it as a single page, ready to send.
+
+19
+00:01:57,421 --> 00:02:04,759
+ClearBill runs entirely offline once the service worker is ready. No accounts, no tracking, no network calls.
+
+20
+00:02:04,929 --> 00:02:13,519
+A built in battery reruns twelve self checks on demand, and twelve hundred ninety Node tests verify the engine, the exports, and every edge.
+
+21
+00:02:14,140 --> 00:02:17,356
+ClearBill. Fictional bills, real practice.
