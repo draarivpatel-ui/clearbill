@@ -286,7 +286,7 @@ export function recoverableRange(snapshot, coding, report = null) {
     lowCents, highCents, grossQuestionedCents: gross, overlapAdjustmentCents,
     basis: lowCents === 0 && highCents === 0
       ? 'Nothing was flagged on this fictional bill.'
-      : 'Questioned amounts, not a prediction: the low end counts only the strongest independent items. The high end removes overlaps before capping at the reported patient share.',
+      : `Questioned amounts, not a prediction: the low end counts only the strongest independent items. The high end counts exact-duplicate overlaps once before capping at the reported patient share.${overlapAdjustmentCents ? ` Gross questioned amount ${usd(gross)}; ${usd(overlapAdjustmentCents)} is shared by overlapping duplicate explanations.` : ''}`,
   };
 }
 

@@ -155,7 +155,8 @@ async function runViewport(cdp, app, scratch, width, height) {
     assert.equal(await evaluate(`${q('#reasoning-panel')}.hidden`), false);
     assert.match(await text('#reasoning-title'), /AI reasoning lab/);
     assert.match(await text('#reason-summary'), /\$120\.00 to \$163\.00/);
-    assert.match(await text('#reason-summary'), /removes overlaps/);
+    assert.match(await text('#reason-summary'), /counts exact-duplicate overlaps once/);
+    assert.match(await text('#reason-summary'), /\$177\.18; \$14\.18 is shared/);
     assert.match(await text('#reason-summary'), /nsa-emergency-review/);
     assert.equal(await evaluate(`document.querySelectorAll('#reason-trace > li').length`), 4);
     assert.match(await text('#reason-trace'), /markup 3\.73x, z 0\.38/);

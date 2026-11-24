@@ -19,7 +19,7 @@ test('analysis is deterministic and canonically serializable for every fixture',
     const b = analysisFor(id);
     assert.equal(canonical(a), canonical(b));
     assert.equal(a.schema, REASONING_SCHEMA);
-    assert.equal(a.ruleVersion, 'clearbill-2026q4-v1');
+    assert.equal(a.ruleVersion, 'clearbill-2026q4-v2');
     assert.deepEqual(a.stages.map(stage => stage.id), ['benchmark', 'coding', 'coverage', 'plan']);
     assert(a.stages.every(stage => stage.steps.length > 0));
   }
@@ -93,7 +93,8 @@ test('recoverable range removes cents already questioned by duplicate-line remov
   assert.equal(er.overlapAdjustmentCents, 1418);
   assert.equal(er.highCents, 16300);
   assert(er.highCents < er.grossQuestionedCents, 'the same dollars must not be counted under duplicate and unit theories twice');
-  assert.match(er.basis, /removes overlaps/);
+  assert.match(er.basis, /counts exact-duplicate overlaps once/);
+  assert.match(er.basis, /\$177\.18; \$14\.18 is shared/);
 });
 
 test('recoverable range leaves non-overlapping findings additive', () => {

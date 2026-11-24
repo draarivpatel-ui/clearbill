@@ -309,7 +309,7 @@ test('brief payload is canonical JSON safe and deterministic', () => {
   for (const state of [DEFAULT_LAB_STATE, { code: '80053' }, { gap: -200000, days: 3650, income: 0, size: 8, region: 'hawaii' }]) {
     const brief = buildBrief(state);
     assert.equal(brief.payload.schema, LAB_SCHEMA);
-    assert.equal(brief.payload.ruleVersion, 'clearbill-2026q4-v1');
+    assert.equal(brief.payload.ruleVersion, 'clearbill-2026q4-v2');
     assert.equal(canonical(brief.payload), brief.canonical);
     assert.equal(brief.sha256, nodeDigest(brief.canonical));
     assert.equal(sha256Hex(brief.canonical), nodeDigest(brief.canonical));
@@ -330,7 +330,7 @@ test('JSON, CSV and Markdown share one digest', () => {
   assert.match(briefCsv(brief), new RegExp(`"sha256","${brief.sha256}"`));
   const md = briefMarkdown(brief);
   assert(md.split(brief.sha256).length >= 3);
-  assert.match(md, /clearbill-2026q4-v1/);
+  assert.match(md, /clearbill-2026q4-v2/);
 });
 test('JSON verifies and single-digit tamper is caught', () => {
   const brief = briefFor({ code: '99285' });
@@ -350,7 +350,7 @@ for (const [label, mutate] of [
   ['truncation', text => text.slice(0, -20)],
   ['value edit', text => text.replace('"gap": 47500', '"gap": 47501')],
   ['schema swap', text => text.replace('clearbill-sensitivity-v1', 'clearbill-sensitivity-v9')],
-  ['ruleset swap', text => text.replace('clearbill-2026q4-v1', 'clearbill-2026q4-v2')],
+  ['ruleset swap', text => text.replace('clearbill-2026q4-v2', 'clearbill-2026q4-v3')],
   ['digest flip', text => {
     const current = text.match(/"sha256": "([a-f0-9])/)[1];
     return text.replace(`"sha256": "${current}`, `"sha256": "${current === 'f' ? 'e' : 'f'}`);

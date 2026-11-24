@@ -1,4 +1,4 @@
-export const RULESET = 'clearbill-2026q4-v1';
+export const RULESET = 'clearbill-2026q4-v2';
 export const CONVERSION_1E4 = 334009;
 export const SERVICE_DATES = Object.freeze(['2026-10-08', '2026-10-21', '2026-11-03']);
 export const LOCALITIES = Object.freeze({
@@ -40,6 +40,7 @@ export const CATALOG = Object.freeze(Object.fromEntries(Object.entries(catalog).
   ]))), mue: mue && Object.freeze(mue) }),
 ])));
 
+export const LAB_TEST_CODES = Object.freeze(['80048', '80053', '80061', '82465', '82947', '83718', '84478', '85025']);
 export const EVIDENCE = Object.freeze(['none', 'encounter', 'site', 'practitioner', 'nonoverlap', 'repeat-lab']);
 export const DISTINCT_MODIFIERS = Object.freeze(['59', 'XE', 'XS', 'XP', 'XU', '91']);
 export const MODIFIERS = Object.freeze(['26', 'TC', ...DISTINCT_MODIFIERS, '76', '77', '25', 'LT', 'RT']);

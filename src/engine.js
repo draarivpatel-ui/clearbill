@@ -1,4 +1,4 @@
-import { CASES, CATALOG, CONVERSION_1E4, DISTINCT_MODIFIERS, ENTITY, EVIDENCE, LOCALITIES, MODIFIERS, PTP, RULESET, SERVICE_DATES } from './data.js';
+import { CASES, CATALOG, CONVERSION_1E4, DISTINCT_MODIFIERS, ENTITY, EVIDENCE, LAB_TEST_CODES, LOCALITIES, MODIFIERS, PTP, RULESET, SERVICE_DATES } from './data.js';
 
 export const MAX_CENTS = 100_000_000;
 export const MAX_UNITS = 500;
@@ -174,7 +174,7 @@ function groupBy(lines, key) {
 function repeatedLines(lines) {
   const results = [];
   const candidates = lines.filter(line => {
-    const repeat = [...DISTINCT_MODIFIERS, '76', '77'];
+    const repeat = [...DISTINCT_MODIFIERS, '76', '77'].filter(modifier => modifier !== '91' || LAB_TEST_CODES.includes(line.code));
     return !quality(line, repeat).documented.length;
   });
   for (const group of groupBy(candidates, line => `${codeKey(line)}/${line.units}/${[...line.modifiers].sort().join(',')}`).values()) {
