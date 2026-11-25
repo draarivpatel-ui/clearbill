@@ -2120,11 +2120,13 @@ table.formula-table th {
   }
 
   .masthead nav {
-    gap: 2px 16px;
+    gap: 2px 10px;
   }
 
   .masthead nav button {
-    padding: 14px 2px 12px;
+    padding: 12px 1px 11px;
+    font-size: 12px;
+    letter-spacing: 0.1em;
   }
 
   .case-rail {
