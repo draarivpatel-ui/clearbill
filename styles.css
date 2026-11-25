@@ -2355,6 +2355,10 @@ table.formula-table th {
   }
 
   /* Bill rows read like a receipt line: the service on top, then units, charge and reference side by side. */
+  #ledger .table-wrap {
+    overflow: visible;
+  }
+
   #ledger .table-wrap tbody tr {
     display: grid;
     grid-template-columns: minmax(3.2rem, auto) minmax(0, 1fr) minmax(0, 1fr);
