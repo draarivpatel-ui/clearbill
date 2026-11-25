@@ -1,5 +1,5 @@
 const prefix = 'clearbill-';
-const cacheName = `${prefix}2026q4-v6`;
+const cacheName = `${prefix}2026q4-v7`;
 const root = self.registration.scope;
 const paths = [
   'index.html', 'styles.css', 'favicon.svg', 'src/app.js', 'src/data.js', 'src/fixtures.js',

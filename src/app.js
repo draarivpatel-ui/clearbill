@@ -164,6 +164,35 @@ function renderTotals(snapshot) {
 
 function focusLine(id) { $(`bill-${id}`)?.focus(); }
 
+// Pointing at a finding lights its bill lines; pointing at a bill line lights the findings that cite it.
+function linkEvidence(lineIds) {
+  const ids = new Set(lineIds);
+  for (const row of all('#ledger tbody tr')) row.classList.toggle('is-linked', ids.has(row.id.replace('bill-', '')));
+  for (const item of all('#findings .finding')) {
+    item.classList.toggle('is-linked', ids.size > 0 && (item.dataset.lines || '').split(' ').some(id => ids.has(id)));
+  }
+}
+
+function wireEvidenceLinks() {
+  const fromFinding = event => {
+    const item = event.target.closest?.('.finding');
+    linkEvidence(item?.dataset.lines ? item.dataset.lines.split(' ') : []);
+  };
+  const fromLine = event => {
+    const row = event.target.closest?.('tbody tr');
+    linkEvidence(row?.id ? [row.id.replace('bill-', '')] : []);
+  };
+  const clear = event => {
+    if (!event.currentTarget.contains(event.relatedTarget)) linkEvidence([]);
+  };
+  for (const [id, handler] of [['findings', fromFinding], ['ledger', fromLine]]) {
+    $(id).addEventListener('pointerover', handler);
+    $(id).addEventListener('focusin', handler);
+    $(id).addEventListener('pointerout', clear);
+    $(id).addEventListener('focusout', clear);
+  }
+}
+
 function renderFindings() {
   const { findings, reviewCount } = state.report;
   $('finding-count').textContent = String(reviewCount);
@@ -182,6 +211,7 @@ function renderFindings() {
     const li = node('li', '', 'finding');
     li.dataset.kind = item.kind;
     li.dataset.level = item.level;
+    li.dataset.lines = item.lineIds.join(' ');
     const mark = node('span', String(index + 1).padStart(2, '0'), 'finding-index');
     mark.setAttribute('aria-hidden', 'true');
     const body = node('div', '', 'finding-body');
@@ -421,6 +451,7 @@ function initialize() {
   for (const button of all('[data-view]')) button.addEventListener('click', () => showView(button.dataset.view));
   $('worksheet-open').addEventListener('click', () => showView('worksheet'));
   $('review-jump').addEventListener('click', () => $('findings-heading').focus());
+  wireEvidenceLinks();
   for (const button of all('[data-language]')) button.addEventListener('click', () => {
     state.language = button.dataset.language;
     renderWorksheet();

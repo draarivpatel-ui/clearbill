@@ -313,7 +313,7 @@ export function disputeLetter(snapshot, analysis) {
     lines.push('Questions about specific charges:');
     actionable.forEach((item, i) => {
       const ids = item.lineIds.length ? ` (${item.lineIds.map(id => id.replace('line-', 'L')).join(', ')})` : '';
-      lines.push(`${i + 1}. ${item.action} Questioned amount ${usd(item.effectCents)}${ids}.`);
+      lines.push(`${i + 1}. ${item.action}. Questioned amount ${usd(item.effectCents)}${ids}.`);
     });
     if (analysis.recoverable?.overlapAdjustmentCents) {
       lines.push(`The questioned amounts above overlap by ${usd(analysis.recoverable.overlapAdjustmentCents)}. The recoverable range counts shared dollars once instead of adding every explanation separately.`);

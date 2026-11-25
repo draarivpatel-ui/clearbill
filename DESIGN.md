@@ -162,7 +162,7 @@ The palette is a small desk set: two paper tones, one ink, one rule color, two w
 
 A horizontal dark masthead (brand left, three workbench destinations right) sits above a slim fiction-warning strip. Below, the desk is an asymmetric grid: a 235px case rail on the left separated by a vertical rule, and a work region holding a full-width case header (Georgia title plus a ruled metadata row) over a two-column audit grid of roughly 8:5, receipt wider than findings.
 
-At or below 1080px the rail folds to the top and case buttons become wrapped chips. At 760px the audit grid stacks and a jump button brings the findings into reach before the ledger. At 560px the case rail condenses to three short cells, the ledger stacks into labeled rows (`data-label` pseudo labels) and padding tightens. Printing with `body[data-print="worksheet"]` removes all furniture and leaves the worksheet sheet alone on a Letter page.
+At or below 1080px the rail folds to the top as a compact strip: three equal case cells (the selected one ruled in ink), then the locality select and offline status on one line. At 900px the audit grid stacks so the receipt gets the full measure, the findings follow in two columns, and a jump button brings them into reach before the ledger. At 560px the case cells shorten, the findings return to one column, each ledger row becomes a receipt line (service and code on top, then units, charge and reference side by side under `data-label` pseudo labels) and padding tightens. Printing with `body[data-print="worksheet"]` removes all furniture and leaves the worksheet sheet alone on a Letter page.
 
 ## Elevation & Depth
 
@@ -190,6 +190,7 @@ Corners are nearly square: 3px on buttons, inputs, chips and the segmented contr
 - **Style:** paper fill, 1px rule-tan border, 3px radius, small-caps label above.
 - **Focus:** ink border plus the ink focus-visible outline; brick caret.
 - **Selects:** native-looking but chrome-free; the chevron is drawn with gradients because the CSP forbids data URIs.
+- **Drawers:** `details` summaries drop the browser triangle for a drawn ink chevron that turns a quarter on open (180ms ease-out, zeroed under reduced motion).
 - **Readonly:** paper-dim fill, muted text.
 
 ### Navigation
@@ -203,10 +204,12 @@ Corners are nearly square: 3px on buttons, inputs, chips and the segmented contr
 ### The receipt
 
 - Paper sheet with a 2px ink rule under its head, small-caps column heads over a single ink rule, hairline row rules, alternating paper-dim rows, right-aligned tabular money, mono codes, a flag-tint highlight for lines under scrutiny, a torn conic-mask bottom edge, and a double-ruled settlement total.
+- **Linked lines.** Pointing at or focusing a finding draws a 1px brick hairline inside each bill line it cites (an inset shadow, so nothing moves); pointing at a bill line does the same in reverse and turns the citing findings' titles brick. This is the examiner's pen tracing evidence, so brick is earned.
 
 ### Findings
 
 - A numbered order of evidence under a 2px ink rule: brick Georgia indices, body text, a small-caps brick tag, muted rule references, hairline separators. The clean state is a forest line between two rules.
+- The count badge stays muted at zero and takes the flag tint with a brick figure when there is something to review.
 
 ### AI reasoning lab (scoped to `#reasoning-panel`)
 
@@ -215,7 +218,7 @@ Corners are nearly square: 3px on buttons, inputs, chips and the segmented contr
 - **Summary strip.** One paper sheet under a 2px ink rule, ruled into four cells, each with a 3px tone rule on top. Figures use the body face with lining tabular numerals because Georgia's old-style figures are hard to scan in a row of money.
 - **Trace timeline.** Four numbered Georgia nodes on a hairline rail, each stage a paper sheet with a collapsible evidence list. Benchmark rows carry a markup gauge with a 1x reference tick.
 - **Simulator.** Controls and the projected patient share callout on the left, the waterfall on the right; one column below 1180px. Range inputs have a forest fill track and a paper thumb that rings on hover and focus. The waterfall measures its container and switches to labels above bars under 520px so chart text never shrinks below its set size.
-- **Letter.** A Georgia sheet under a double ink rule with the system's worksheet shadow, because it is a page resting on the desk. `body[data-print="letter"]` prints the letter and its SHA-256 line alone.
+- **Letter.** Its drawer opens under a 2px ink rule with a Georgia section-weight summary, because the letter is the lab's deliverable, not a footnote. A Georgia sheet under a double ink rule with the system's worksheet shadow, because it is a page resting on the desk. `body[data-print="letter"]` prints the letter and its SHA-256 line alone.
 
 ## Do's and Don'ts
 
