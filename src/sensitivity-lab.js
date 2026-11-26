@@ -363,9 +363,11 @@ export function verifyBriefDoc(text) {
 }
 
 export function mutateBriefText(text) {
-  const index = [...String(text)].findIndex(char => /[0-9]/.test(char));
+  const chars = [...String(text)];
+  const index = chars.findIndex(char => /[0-9]/.test(char));
   if (index < 0) return `${text}0`;
-  return `${text.slice(0, index)}${(Number(text[index]) + 1) % 10}${text.slice(index + 1)}`;
+  chars[index] = String((Number(chars[index]) + 1) % 10);
+  return chars.join('');
 }
 
 const check = (condition, detail) => {

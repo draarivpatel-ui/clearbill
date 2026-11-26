@@ -37,7 +37,7 @@ export function benchmarkLines(snapshot, report) {
     if (ref.lineCents === null) {
       return { id: line.id, code: line.code, billed: line.billed, referenceCents: null, markupX100: null, zX100: null, band: 'no-reference' };
     }
-    const markupX100 = roundHalfUp((line.billed * 100) / ref.unitCents);
+    const markupX100 = roundHalfUp((line.billed * 100) / ref.lineCents);
     const zX100 = roundHalfUp(((markupX100 - MARKUP_MEAN_X100) * 100) / MARKUP_SD_X100);
     const band = markupX100 <= 105 ? 'at-reference'
       : zX100 <= 100 ? 'typical' : zX100 <= 200 ? 'elevated' : 'outlier';

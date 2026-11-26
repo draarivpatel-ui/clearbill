@@ -42,6 +42,17 @@ test('benchmark scores every ER line with exact integer markup and z', () => {
   assert.equal(rows[1].comparisonOnly, false);
 });
 
+test('benchmark markup scales the reference by units before comparing a line total', () => {
+  const bill = createCase('demo-er');
+  bill.lines[1].units = 2;
+  bill.lines[1].billed = 92000;
+  const row = benchmarkLines(bill, audit(bill))[1];
+  assert.equal(row.referenceCents, 24652);
+  assert.equal(row.markupX100, 373);
+  assert.equal(row.zX100, 38);
+  assert.equal(row.band, 'typical');
+});
+
 for (const [billed, markup, band] of [
   [8923, 100, 'at-reference'], [9450, 106, 'typical'], [41046, 460, 'typical'],
   [53538, 600, 'elevated'], [41100, 461, 'elevated'], [53600, 601, 'outlier'],

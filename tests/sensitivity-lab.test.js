@@ -387,6 +387,7 @@ test('mutateBriefText handles edge inputs', () => {
   assert.equal(mutateBriefText(''), '0');
   assert.equal(mutateBriefText('9'), '0');
   assert.equal(mutateBriefText('a1b'), 'a2b');
+  assert.equal(mutateBriefText('😀abc1'), '😀abc2');
 });
 
 // In-page deterministic self-tests mirror the exported surface.
