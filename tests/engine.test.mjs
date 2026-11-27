@@ -41,7 +41,7 @@ const reference = [
 ];
 
 for (const [code, setting, component, ...expected] of reference) {
-  ['houston', 'manhattan', 'iowa'].forEach((locality, i) => {
+  ['locality-a', 'locality-b', 'locality-c'].forEach((locality, i) => {
     test(`RVU26D oracle ${code} ${setting}/${component} ${locality}`, () => {
       const result = calculateReference(code, locality, setting, component);
       assert.deepEqual([result.available, result.cents, result.conversion], [true, expected[i], 334009]);
@@ -51,18 +51,18 @@ for (const [code, setting, component, ...expected] of reference) {
 for (const code of ['99281', '99282', '99283', '99284', '99285', '70551', '71046', '72148', '74177']) {
   test(`unavailable CMS facility/nonfacility setting ${code}`, () => {
     const setting = code.startsWith('99') ? 'office' : 'facility';
-    assert.deepEqual(calculateReference(code, 'houston', setting), { available: false, reason: 'setting-not-applicable' });
-    if (setting === 'facility') assert.equal(calculateReference(code, 'iowa', setting, 'TC').available, false);
+    assert.deepEqual(calculateReference(code, 'locality-a', setting), { available: false, reason: 'setting-not-applicable' });
+    if (setting === 'facility') assert.equal(calculateReference(code, 'locality-c', setting, 'TC').available, false);
   });
 }
 for (const code of ['36415', '80048', '80053', '80061', '82465', '82947', '83718', '84478', '85025']) {
   test(`separately scheduled service ${code} does not price at zero`, () => {
-    assert.deepEqual(calculateReference(code, 'iowa', 'office'), { available: false, reason: 'not-listed' });
-    assert.equal(calculateReference(code, 'houston', 'facility').available, false);
+    assert.deepEqual(calculateReference(code, 'locality-c', 'office'), { available: false, reason: 'not-listed' });
+    assert.equal(calculateReference(code, 'locality-a', 'facility').available, false);
   });
 }
-test('Houston ER equation exposes the individual products and both amount types separately', () => {
-  assert.deepEqual(calculateReference('99284', 'houston', 'facility').products, [276192, 44685, 48160]);
+test('Reference locality A ER equation exposes the individual products and both amount types separately', () => {
+  assert.deepEqual(calculateReference('99284', 'locality-a', 'facility').products, [276192, 44685, 48160]);
   const result = audit(createCase('demo-er'));
   assert.deepEqual(result.references.slice(0, 2), [
     { id: 'line-1', unitCents: 12326, lineCents: 12326, comparisonOnly: true },
@@ -71,9 +71,9 @@ test('Houston ER equation exposes the individual products and both amount types 
 });
 
 for (const [id, locality, expected, topics] of [
-  ['demo-er', 'houston', ['exact-duplicate', 'near-duplicate', 'ptp-pair-review', 'mue-units'], ['duplicate', 'ptp', 'mue', 'aid']],
-  ['demo-imaging', 'manhattan', ['gfe-threshold'], ['gfe', 'aid']],
-  ['demo-clean', 'iowa', [], ['clean', 'aid']],
+  ['demo-er', 'locality-a', ['exact-duplicate', 'near-duplicate', 'ptp-pair-review', 'mue-units'], ['duplicate', 'ptp', 'mue', 'aid']],
+  ['demo-imaging', 'locality-b', ['gfe-threshold'], ['gfe', 'aid']],
+  ['demo-clean', 'locality-c', [], ['clean', 'aid']],
 ]) {
   test(`synthetic reference result ${id}`, () => {
     const input = createCase(id);
@@ -359,7 +359,7 @@ for (const field of ['units', 'code', 'entity', 'day', 'evidence', 'setting']) {
 test('unknown IDs, arbitrary case fields, and duplicate line IDs reject', () => {
   const bill = createCase('demo-clean');
   assert.throws(() => createCase('__proto__'));
-  assert.throws(() => calculateReference('toString', 'houston', 'office'));
+  assert.throws(() => calculateReference('toString', 'locality-a', 'office'));
   assert.throws(() => screenFpl('constructor', 1, 1));
   assert.throws(() => audit({ ...bill, account: 'not admitted' }));
   bill.lines[1].id = bill.lines[0].id;

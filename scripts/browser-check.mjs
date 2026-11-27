@@ -228,7 +228,7 @@ async function runViewport(cdp, app, scratch, width, height) {
     await click('[data-view=reference]');
     assert.match(await text('#reference-result'), /\$89\.23/);
     assert.match(await text('#fpl-result'), /146\.4%/);
-    await set('#locality', 'houston');
+    await set('#locality', 'locality-a');
     assert.match(await text('#reference-result'), /\$96\.33/);
     await set('#ref-code', '80053');
     assert.match(await text('#reference-result'), /No reference/);
@@ -304,7 +304,7 @@ async function runViewport(cdp, app, scratch, width, height) {
     await wait(`${q('#share-open-panel')}.hidden && ${q('#finding-count')}.textContent === '0'`, 'released fictional case');
     mark(`${width}x${height} CSV, audit replay, authenticated link and wrong-key rejection`);
 
-    const again = await evaluate(`import('./src/exchange.js').then(m => m.sealSummary('demo-imaging', 'manhattan'))`);
+    const again = await evaluate(`import('./src/exchange.js').then(m => m.sealSummary('demo-imaging', 'locality-b'))`);
     await send('Page.navigate', { url: `${route}${again.fragment}` });
     await wait(`!${q('#share-open-panel')}.hidden && location.hash === ''`, 'second sealed link in the same tab');
     await set('#open-key', again.key);
@@ -312,7 +312,7 @@ async function runViewport(cdp, app, scratch, width, height) {
     await wait(`${q('#share-open-panel')}.hidden && ${q('#case-title')}.textContent === 'Outpatient imaging'`, 'second fictional case released');
     mark(`${width}x${height} second sealed link replaces panel state and strips the fragment`);
 
-    const third = await evaluate(`import('./src/exchange.js').then(m => m.sealSummary('demo-clean', 'iowa'))`);
+    const third = await evaluate(`import('./src/exchange.js').then(m => m.sealSummary('demo-clean', 'locality-c'))`);
     await click('[data-view=worksheet]');
     await send('Page.navigate', { url: `${route}${third.fragment}` });
     await wait(`!${q('#share-open-panel')}.hidden`, 'sealed panel over worksheet view');

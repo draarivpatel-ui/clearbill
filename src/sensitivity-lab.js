@@ -402,9 +402,9 @@ export function selfTests() {
         if (!cell.available) check(!('cents' in cell) && cell.reason !== undefined, `${code} N/A carries no cents`);
         else check(cell.cents > 0, `${code} priced rows never show $0`);
       }
-      check(pfsCell('80053', 'iowa', 'office', 'base').reason === 'not-listed', 'unpriced code reason');
-      check(pfsCell('99284', 'iowa', 'office', 'base').reason === 'setting-not-applicable', 'NA setting reason');
-      check(pfsCell('__proto__', 'iowa', 'office', 'base').available === false, 'hostile code rejected');
+      check(pfsCell('80053', 'locality-c', 'office', 'base').reason === 'not-listed', 'unpriced code reason');
+      check(pfsCell('99284', 'locality-c', 'office', 'base').reason === 'setting-not-applicable', 'NA setting reason');
+      check(pfsCell('__proto__', 'locality-c', 'office', 'base').available === false, 'hostile code rejected');
     }],
     ['spread', () => {
       const result = pfsComparison({ code: '99213', component: 'base' });

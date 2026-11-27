@@ -130,7 +130,7 @@ for (const [label, input] of [
   ['string size', { size: '3' }], ['negative size', { size: -1 }], ['zero size', { size: 0 }],
   ['negative income', { income: -1 }], ['float gap', { gap: 4.5 }], ['float days', { days: 1.2 }],
   ['NaN gap', { gap: NaN }], ['unknown code', { code: '99999' }], ['code toString', { code: 'toString' }],
-  ['office case', { setting: 'Office' }], ['bad region', { region: 'texas' }], ['bad component', { component: 'global' }],
+  ['office case', { setting: 'Office' }], ['bad region', { region: 'unknown-locality' }], ['bad component', { component: 'global' }],
   ['null proto', Object.create(null)],
 ]) {
   test(`normalize rejects ${label}`, () => assert.equal(normalizeLabState(input), null));
@@ -187,9 +187,9 @@ for (const code of codes) {
   }
 }
 for (const [code, locality, setting, component] of [
-  ['99999', 'iowa', 'office', 'base'], ['99213', 'texas', 'office', 'base'], ['99213', 'iowa', 'clinic', 'base'],
-  ['99213', 'iowa', 'office', 'global'], [null, 'iowa', 'office', 'base'], ['__proto__', 'iowa', 'office', 'base'],
-  [undefined, 'houston', 'facility', 'TC'],
+  ['99999', 'locality-c', 'office', 'base'], ['99213', 'unknown-locality', 'office', 'base'], ['99213', 'locality-c', 'clinic', 'base'],
+  ['99213', 'locality-c', 'office', 'global'], [null, 'locality-c', 'office', 'base'], ['__proto__', 'locality-c', 'office', 'base'],
+  [undefined, 'locality-a', 'facility', 'TC'],
 ]) {
   test(`pfsCell hostile input ${JSON.stringify([code, locality, setting, component])}`, () => {
     assert.deepEqual(pfsCell(code, locality, setting, component), { available: false, reason: 'invalid' });
@@ -271,7 +271,7 @@ for (const region of LAB_REGIONS) {
   });
 }
 test('FPL rows fall back to contiguous on hostile region', () => {
-  assert.equal(fplRows('texas')[0].guideline, 1596000);
+  assert.equal(fplRows('unknown-locality')[0].guideline, 1596000);
   assert.equal(fplRows('__proto__')[7].guideline, 5572000);
   assert.equal(fplRows('contiguous').length, 8);
 });
@@ -377,7 +377,7 @@ test('CSV layout, escaping and N/A rows', () => {
 test('Markdown keeps tables, digests and no N/A-as-zero rows', () => {
   const md = briefMarkdown(briefFor({ code: '99284' }), 'en');
   assert(md.startsWith('# ClearBill sensitivity brief'));
-  assert(md.includes('| Houston, TX | 04412 / 18 | Facility professional |'));
+  assert(md.includes('| Reference locality A | 04412 / 18 | Facility professional |'));
   assert(!md.includes('N/A | N/A | N/A | $0'));
   const mdEs = briefMarkdown(briefFor({ code: '99284' }), 'es');
   assert(mdEs.includes('Informe de sensibilidad'));

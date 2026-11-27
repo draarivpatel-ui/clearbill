@@ -2,9 +2,9 @@ export const RULESET = 'clearbill-2026q4-v2';
 export const CONVERSION_1E4 = 334009;
 export const SERVICE_DATES = Object.freeze(['2026-10-08', '2026-10-21', '2026-11-03']);
 export const LOCALITIES = Object.freeze({
-  houston: Object.freeze({ name: 'Houston, TX', mac: '04412 / 18', gpci: Object.freeze([1008, 993, 1376]) }),
-  manhattan: Object.freeze({ name: 'Manhattan, NY', mac: '13202 / 01', gpci: Object.freeze([1064, 1162, 1586]) }),
-  iowa: Object.freeze({ name: 'Iowa statewide', mac: '05102 / 00', gpci: Object.freeze([1000, 915, 397]) }),
+  'locality-a': Object.freeze({ name: 'Reference locality A', mac: '04412 / 18', gpci: Object.freeze([1008, 993, 1376]) }),
+  'locality-b': Object.freeze({ name: 'Reference locality B', mac: '13202 / 01', gpci: Object.freeze([1064, 1162, 1586]) }),
+  'locality-c': Object.freeze({ name: 'Reference locality C', mac: '05102 / 00', gpci: Object.freeze([1000, 915, 397]) }),
 });
 
 // RVUs in hundredths, ordered work / office PE / facility PE / malpractice.
@@ -51,9 +51,9 @@ export const ENTITY = Object.freeze({
   'demo-imaging': 'Imaging center',
 });
 export const CASES = Object.freeze({
-  'demo-er': Object.freeze({ name: 'ER visit', detail: 'Unbundled labs and duplicate charges', setting: 'Emergency care', locality: 'houston', coverage: 'Insured EOB' }),
-  'demo-imaging': Object.freeze({ name: 'Outpatient imaging', detail: 'Self-pay bill above its written estimate', setting: 'Scheduled imaging', locality: 'manhattan', coverage: 'Self-pay bill' }),
-  'demo-clean': Object.freeze({ name: 'Routine follow-up', detail: 'Clean itemized bill control', setting: 'Office care', locality: 'iowa', coverage: 'Insured EOB' }),
+  'demo-er': Object.freeze({ name: 'ER visit', detail: 'Unbundled labs and duplicate charges', setting: 'Emergency care', locality: 'locality-a', coverage: 'Insured EOB' }),
+  'demo-imaging': Object.freeze({ name: 'Outpatient imaging', detail: 'Self-pay bill above its written estimate', setting: 'Scheduled imaging', locality: 'locality-b', coverage: 'Self-pay bill' }),
+  'demo-clean': Object.freeze({ name: 'Routine follow-up', detail: 'Clean itemized bill control', setting: 'Office care', locality: 'locality-c', coverage: 'Insured EOB' }),
 });
 
 export const SOURCES = Object.freeze({

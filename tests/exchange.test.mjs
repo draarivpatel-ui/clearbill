@@ -112,17 +112,17 @@ for (const [label, mutate] of [
   ['unexpected segment', f => `${f}.AAAA`], ['padding', f => `${f}=`], ['oversize', f => f + 'A'.repeat(521)], ['empty', () => ''],
 ]) {
   test(`AES-GCM rejects ${label}`, async () => {
-    const { fragment, key } = await sealSummary('demo-er', 'iowa');
+    const { fragment, key } = await sealSummary('demo-er', 'locality-c');
     await assert.rejects(openSummary(mutate(fragment), key), /Could not open/);
   });
 }
 test('AES-GCM rejects noncanonical base64url at a key tail', async () => {
-  const { fragment, key } = await sealSummary('demo-er', 'iowa');
+  const { fragment, key } = await sealSummary('demo-er', 'locality-c');
   const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_';
   const noncanonical = key.slice(0, -1) + chars[chars.indexOf(key.at(-1)) + 1];
   assert.deepEqual(Buffer.from(noncanonical, 'base64url'), Buffer.from(key, 'base64url'));
   await assert.rejects(openSummary(fragment, noncanonical), /Could not open/);
 });
-for (const [id, locality] of [['toString', 'iowa'], ['demo-er', '__proto__'], ['demo-er', '*'], ['bill-123', 'houston'], [{ id: 'demo-er' }, 'houston']]) {
+for (const [id, locality] of [['toString', 'locality-c'], ['demo-er', '__proto__'], ['demo-er', '*'], ['bill-123', 'locality-a'], [{ id: 'demo-er' }, 'locality-a']]) {
   test(`summary whitelist rejects ${JSON.stringify([id, locality])}`, () => assert.rejects(sealSummary(id, locality), /Only fictional/));
 }
